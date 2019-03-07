@@ -20,6 +20,11 @@ On the live NIXOS:
 On NIXOS:
 * the X server was not working until I updated the kernel (pkgs.linuxPackages_latest). `nomodeset` kernelParam might also help.
 
+## Use dual boot
+Each time you switch have to :
+(i) activate RAID (ii) activate "secure boot"; for booting on Windows 
+(i) activate AHCI (ii) deactivate "secure boot"; for booting on systemd-boot/NIXOS
+
 ## Main differences with the [install of arch linux on an ASUS zenbook pro UX32VD](https://github.com/JosephLucas/archlinux_installation): 
 * systemd-boot instead of rEFInd
 * i3 as window manager
