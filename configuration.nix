@@ -23,15 +23,17 @@
   ];
 
   boot = {
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages_4_20;
     
-    kernelParams = [ 
+    kernelParams = [
        # many parameters are from : https://github.com/JackHack96/dell-xps-9570-ubuntu-respin#manual-respin-procedure
-       "acpi_osi=Linux" 
-       "acpi_rev_override=1" 
-       "pcie_aspm=force" # force Active State Power Management (ASPM) even on devices that claim not to support it
-       "mem_sleep_default=deep"
+       "acpi_osi=Linux"
+       "acpi_rev_override=1"
 
+       # Disable this if it causes on/off loss of ethernet connection
+       "pcie_aspm=force" # force Active State Power Management (ASPM) even on devices that claim not to support it
+
+       "mem_sleep_default=deep"
        # Newest kernels have moved the video mode setting into the kernel. So all the programming of the hardware specific clock rates and registers on the video card happen in the kernel rather than in the X driver when the X server starts. This makes it possible to have high resolution nice looking splash (boot) screens and flicker free transitions from boot splash to login screen. Unfortunately, on some cards this doesnt work properly and you end up with a black screen. Adding the nomodeset parameter instructs the kernel to not load video drivers and use BIOS modes instead until X is loaded.
        # "nomodeset" # disable kernel modesetting (kms) that sets display resolution and depth in the kernel space
 
@@ -44,15 +46,12 @@
         # "i915"
         # "dell-smm-hwmon"
         "scsi_mod"
-        "drm"
       ];
     };
-    
+
     # scsi_mod.use_blk_mq=1 # optimises the scheduling of IO on disks using multi-cores
-    # drm.vlblankoffdelay=1 # https://wiki.ubuntu.com/Kernel/PowerManagement/PowerSavingTweaks
     extraModprobeConfig = ''
       options scsi_mod use_blk_mq=1
-      options drm vlblankoffdelay=1
     '';
     # practical module option when the intel chip is used since initrd
     # options i915 enable_fbc=1 enable_guc_loading=1 enable_guc_submission=1 disable_power_well=0
@@ -70,11 +69,6 @@
 
   networking = {
     hostName = "nixos"; # Define your hostname.
-    wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-    # to get available wifi : "iwlist <interface> scan"
-    # the interface is found using "ip link show"
-
-    # FIXME wpa_supplicant ?
 
     firewall.enable = true; # it''s true by default anyway. It is a "statefull firewall".
     # Open ports in the firewall. 
@@ -84,6 +78,12 @@
     # Configure network proxy if necessary
     # proxy.default = "http://user:password@proxy:port/";
     # proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+
+    networkmanager.enable = true;
+    # NB: networkmanager superseds wireless.enable
+    
+    # to get available wifi : "iwlist <interface> scan"
+    # the interface is found using "ip link show"
   };
 
   fonts.fonts = with pkgs; [ 
@@ -127,8 +127,18 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  # Or go to https://nixos.org/nixos/packages.html#
-  environment.systemPackages = with pkgs; [
+  # Or go to https://nixos.org/nixos/packages.html
+  environment.systemPackages = with pkgs; 
+    # https://nixos.wiki/wiki/Python
+    let 
+      my-python-packages = python-packages: with python-packages; [
+        pandas
+        requests
+        virtualenvwrapper 
+        # other python packages in the default interpreter...
+      ]; 
+      python-with-my-packages = python3.withPackages my-python-packages;
+    in [   
     # xfce4 goodies
     xfce.xfce4-panel
     xfce.xfce4-clipman-plugin
@@ -139,6 +149,9 @@
     xfce.xfce4-whiskermenu-plugin
     xfce.xfce4-xkb-plugin
     xfce.xfce4-windowck-plugin
+    xfce.xfce4-notifyd # for volume notifications ....
+    xfce.xfce4-hardware-monitor-plugin
+    networkmanagerapplet
 
     xfce.thunar-archive-plugin # thunar extension for compressed/archives
     xfce.thunar-volman # thunar extension for removable disks
@@ -167,7 +180,10 @@
     ncdu
     ntfs3g # enable ntfs (FUSE driver with write support)
     gnome3.file-roller 
-    ncmpcpp # a command line, client interface for mpd the music player daemon
+    mpc_cli # a minimalist cmd line, client interface for mpd, the music player daemon, for i3 bindings
+    ncmpcpp # full featured command line, client interface for mpd
+
+    python-with-my-packages
 
     # GUI apps
     firefox 
@@ -183,22 +199,24 @@
 
     # themes
     papirus-icon-theme
+    # gnome-icon-theme
 
     # graphic card
     glxinfo
     glmark2 # to benchamrk 3D graphics acceleration
 
-    # micro$oft
-    (wine.override { wineBuild = "wineWow"; wineRelease = "staging"; })
-    # To install starcraft 2 I had to : 
-    #   (i)  install firefox within wine (using wintricks it is easier)
-    #   (ii) open a webpage to get the a web certificate needed by the Battle.net agent
-    winetricks
     # games
-    eduke32
     steam
     # NB: steam seems to remember the video card used during its own installation/first start. If the card used to launch the game differs from the card used to install steam, problems may occur.
     # To totally reset steam : rm -r /home/jlucas/.local/share/Steam .steam
+    (wine.override { wineBuild = "wineWow"; wineRelease = "staging"; })
+    (winetricks.override { wine = (wine.override { wineBuild = "wineWow"; wineRelease = "staging"; }) ; })
+    # For SC2 it might be needed to add missing dll 
+    #  winetricks d3dcompiler_43
+    # Using WINEARCH=win32 is preferable for SC2
+    #  winetricks firefox
+    # Reset game settings
+    samba
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -210,6 +228,7 @@
   sound.enable = true;
 
   services = {
+    samba.enable = true;
     # hardware management
     fstrim.enable = true; # ssd disk optimisation
     # udisks2.enable = true; # use dbus to manage storage devices # FIXME usb disk automount
@@ -222,9 +241,9 @@
     localtime.enable = true;
     redshift = {
       enable = true;
-      provider = "geoclue2"; # requires services.localtime.enable = true;
-      #latitude = "48.856614";
-      #longitude = "2.3522219";
+      #provider = "geoclue2"; # requires services.localtime.enable = true;
+      latitude = "48.856614";
+      longitude = "2.3522219";
     }; # Make sure to not start redshift-gtk, otherwise you will have 2 instances of redhift running, that cause a swicth between standard colors and redshifted colors every 1-2 seconds.
     
     openssh = {
@@ -242,7 +261,7 @@
       
       # here you can switch the used card at boot
       videoDrivers = [ "nvidia" ]; 
-      #videoDrivers = [ "intel" ]; 
+      # videoDrivers = [ "intel" ]; 
       
       displayManager.lightdm.enable = true;
       
@@ -300,6 +319,7 @@
         intelBusId = "PCI:0:2:0";
       };
     };
+
     # An alternative solution for switchable graphic cards that works 
     ### bumblebee
     #bumblebee = {
