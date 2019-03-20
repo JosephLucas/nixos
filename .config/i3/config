@@ -191,3 +191,5 @@ bindsym XF86AudioPlay exec mpc toggle
 bindsym XF86AudioNext exec mpc next
 bindsym XF86AudioPrev exec mpc prev
 
+# https://www.reddit.com/r/i3wm/comments/8gh4c0/working_fix_for_focusing_intellij_popups/
+for_window [class="^jetbrains-.+"][window_type=dialog] focus
