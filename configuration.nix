@@ -132,10 +132,10 @@
     # https://nixos.wiki/wiki/Python
     let 
       my-python-packages = python-packages: with python-packages; [
+        # python packages in the default interpreter ...
         pandas
         requests
-        virtualenvwrapper 
-        # other python packages in the default interpreter...
+        virtualenvwrapper
       ]; 
       python-with-my-packages = python3.withPackages my-python-packages;
     in [   
@@ -156,6 +156,10 @@
     xfce.thunar-archive-plugin # thunar extension for compressed/archives
     xfce.thunar-volman # thunar extension for removable disks
 
+    service-wrapper # convenient wrapper for systemctl
+    pavucontrol # PulseAudio Volume Control
+    blueman # bluetooth gtk client
+
     # basic command line utilities
     feh # for wallpaper on i3
     file
@@ -169,6 +173,7 @@
     wget
     kdiff3
     pandoc # universal conversion conversion of written file types
+    texlive.combined.scheme-full # this is heavy
     xorg.xkill
     vim
     w3m # a minimalist cmd line web browser with image previews
@@ -180,8 +185,8 @@
     ncdu
     ntfs3g # enable ntfs (FUSE driver with write support)
     gnome3.file-roller 
-    mpc_cli # a minimalist cmd line, client interface for mpd, the music player daemon, for i3 bindings
-    ncmpcpp # full featured command line, client interface for mpd
+    mpc_cli # a minimalist cmd line, client interface for mpd the music player daemon, for i3 bindings
+    ncmpcpp # a command line, client interface for mpd the music player daemon
 
     python-with-my-packages
 
@@ -306,6 +311,20 @@
       enable = true;
       # https://nixos.org/nixpkgs/manual/#sec-steam-play
       support32Bit = true;
+      # https://nixos.wiki/wiki/Bluetooth
+      # "Only ... full ... has Bluetooth support"
+      package = pkgs.pulseaudioFull;
+    };
+
+    # To enable bluetooth pairing of bose quiet confort 35 headset
+    # https://github.com/NixOS/nixpkgs/pull/23427
+    bluetooth = {
+      enable = true;
+      extraConfig  = ''
+        [General]
+        ControllerMode = bredr
+        Enable=Source,Sink,Media,Socket
+      '';
     };
      
     # GPU

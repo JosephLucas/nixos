@@ -55,6 +55,11 @@ nix-env -e package
 ranger --copy-config=all
 ```
 
+## Bluetooth (for Bose Quiet Confort 35)
+
+[This](http://www.planet-libre.org/index.php?post_id=21101) helped and [this](https://nixos.wiki/wiki/Bluetooth) also
+
+
 ## TIPS
 "Unlock" the panel of xfce if you want to move it. This can be done in the preference of the panel.
 
