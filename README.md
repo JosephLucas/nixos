@@ -60,6 +60,10 @@ ranger --copy-config=all
 [This](http://www.planet-libre.org/index.php?post_id=21101) helped and [this](https://nixos.wiki/wiki/Bluetooth) also.
 [This](https://askubuntu.com/a/773391) was very useful.
 
+## Overlays
+
+[A comprehensible example](https://stackoverflow.com/a/50783276) and [some explanations](https://stackoverflow.com/a/53537841).
+
 ## TIPS
 "Unlock" the panel of xfce if you want to move it. This can be done in the preference of the panel.
 
