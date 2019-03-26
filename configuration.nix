@@ -48,7 +48,6 @@
         "scsi_mod"
       ];
     };
-
     # scsi_mod.use_blk_mq=1 # optimises the scheduling of IO on disks using multi-cores
     extraModprobeConfig = ''
       options scsi_mod use_blk_mq=1
@@ -170,7 +169,7 @@
     gdb
     killall
     zip
-    unzip
+    unar # universal unarchiver (more powerful than 7z)
     lsof
     pciutils # for lspci
     git
@@ -178,6 +177,7 @@
     kdiff3
     pandoc # universal conversion conversion of written file types
     texlive.combined.scheme-full # this is heavy
+    texstudio
     xorg.xkill
     vim
     w3m # a minimalist cmd line web browser with image previews
@@ -196,6 +196,7 @@
 
     # GUI apps
     firefox 
+    shadowfox # dark theme for preferences internal pages of firefox
     thunderbird
     jetbrains.pycharm-community
     nextcloud-client

@@ -64,6 +64,37 @@ ranger --copy-config=all
 
 [A comprehensible example](https://stackoverflow.com/a/50783276) and [some explanations](https://stackoverflow.com/a/53537841).
 
+## TeXstudio dark theme
+
+See https://github.com/texstudio-org/texstudio/issues/45
+```
+wget https://www.dropbox.com/s/imkvx08gsjtzww8/TeXstudio_francesco_dark.rar
+unar Downloads/TeXstudio_francesco_dark.rar
+cd TeXstudio_francesco_dark
+```
+Read the README and install
+```
+sed 's/Interface\\Language=fr/Interface\\Language=fr/g' francesco_dark_win.txsprofile > $HOME/.config/texstudio/dark_theme.txsprofile
+sed "s%C:/Users/franc/AppData/Roaming/TeXstudio/rc/%$HOME/.config/texstudio/%g" stylesheet.qss > $HOME/.config/texstudio/stylesheet.qss
+cp -r rc ~/.config/texstudio/
+```
+Then load `$HOME/.config/texstudio/dark_theme.txsprofile` in texstudio : Option->Load Profiles... 
+
+## Firefox dark theme
+
+Make sure the `shadowfox` nixos package is installed, then
+```bash
+shadowfox-updater
+```
+With tab enter, select Install/Update. Then exit and start firefox.
+
+Install the "Dark reader" extension and "Dark" theme within Firefox.
+
+[Solve the white flash when firefox loads a new page](https://www.reddit.com/r/firefox/comments/8g37x2/any_way_to_disable_the_white_flash_when_a_website/) :
+```bash
+echo '.browserContainer { background-color: #000000 !important; }' >> .mozilla/firefox/ir3ucze0.default/chrome/userChrome.css
+```
+
 ## TIPS
 "Unlock" the panel of xfce if you want to move it. This can be done in the preference of the panel.
 
