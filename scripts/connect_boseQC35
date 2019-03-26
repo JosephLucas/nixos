@@ -15,6 +15,9 @@ sleep 5
 echo -e "connect ${card_mac}\n quit"|bluetoothctl 
 sleep 5
 # "grab once more the profile index, because the index changes every time the device is disconnected and reconnected"
-card_profile="$(pacmd list-cards | grep bluez_card -B1 | grep index | awk '{print $2}')"
+# https://nixos.wiki/wiki/Bluetooth
+card_profile="$(pactl list cards short | egrep -o bluez_card[[:alnum:]._]+)"
 # set the audio profile to a2dp
 pacmd set-card-profile "${card_profile}" a2dp_sink
+# set the device as the default audio output
+pacmd set-default-sink "${card_profile}"

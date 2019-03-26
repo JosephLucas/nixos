@@ -105,7 +105,10 @@
   time.timeZone = "Europe/Paris"; # services.localtime might give the same info any-way, but needs internet
 
   # e.g. steam package has a non-free licence
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs = {
+    config.allowUnfree = true;
+    overlays =[ (import ./overlays/boseqc35.nix) ];
+  };
 
   # taken from https://github.com/paolobueno/nixos-config/blob/master/configuration.nix
   programs = {
@@ -159,6 +162,7 @@
     service-wrapper # convenient wrapper for systemctl
     pavucontrol # PulseAudio Volume Control
     blueman # bluetooth gtk client
+    boseqc35
 
     # basic command line utilities
     feh # for wallpaper on i3
@@ -316,7 +320,7 @@
       package = pkgs.pulseaudioFull;
     };
 
-    # To enable bluetooth pairing of bose quiet confort 35 headset
+    # Enable bluetooth pairing of bose quiet confort 35 headset
     # https://github.com/NixOS/nixpkgs/pull/23427
     bluetooth = {
       enable = true;
