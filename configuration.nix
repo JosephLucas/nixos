@@ -30,7 +30,7 @@
        "acpi_osi=Linux"
        "acpi_rev_override=1"
 
-       # Disable this if it causes on/off loss of ethernet connection
+       # Disable this if it causes on/off loss of ethernet conncetion with external usb ethernet card
        "pcie_aspm=force" # force Active State Power Management (ASPM) even on devices that claim not to support it
 
        "mem_sleep_default=deep"
@@ -79,7 +79,7 @@
     # proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
     networkmanager.enable = true;
-    # NB: networkmanager superseds wireless.enable
+    # NB: networkmanager supersedes wireless.enable
     
     # to get available wifi : "iwlist <interface> scan"
     # the interface is found using "ip link show"
@@ -111,17 +111,7 @@
 
   # taken from https://github.com/paolobueno/nixos-config/blob/master/configuration.nix
   programs = {
-    zsh = {
-      enable = true;
-      enableCompletion = true;
-      syntaxHighlighting = {
-        enable = true;
-        highlighters = [ "main" "brackets" "pattern" ];
-      };
-      ohMyZsh.enable = true;
-      ohMyZsh.plugins = [ "git" ];
-      ohMyZsh.theme = "pure";
-    };
+    fish.enable = true;
     adb.enable = true; # android debuger, for smartphone
     mosh.enable = true; # mobile shell, pour remplacer ssh+screen dans certains cas
     ssh.startAgent = true;
@@ -134,7 +124,6 @@
     # https://nixos.wiki/wiki/Python
     let 
       my-python-packages = python-packages: with python-packages; [
-        # python packages in the default interpreter ...
         pandas
         requests
         virtualenvwrapper
@@ -147,7 +136,6 @@
     xfce.xfce4-datetime-plugin
     xfce.xfce4-pulseaudio-plugin
     xfce.xfce4-namebar-plugin
-    xfce.xfce4-namebar-plugin
     xfce.xfce4-whiskermenu-plugin
     xfce.xfce4-xkb-plugin
     xfce.xfce4-windowck-plugin
@@ -156,7 +144,8 @@
     networkmanagerapplet
 
     xfce.thunar-archive-plugin # thunar extension for compressed/archives
-    xfce.thunar-volman # thunar extension for removable disks
+    # AFAIK udiskie supersedes thunar-volman
+    # xfce.thunar-volman # thunar extension for removable disks
 
     service-wrapper # convenient wrapper for systemctl
     pavucontrol # PulseAudio Volume Control
@@ -182,12 +171,14 @@
     vim
     w3m # a minimalist cmd line web browser with image previews
     htop
+    sysstat
     powertop # monitor energy consumption
     gnupg
     p7zip
     rsync
     ncdu
     ntfs3g # enable ntfs (FUSE driver with write support)
+    udiskie # removable disk automounter for udisks
     gnome3.file-roller 
     mpc_cli # a minimalist cmd line, client interface for mpd the music player daemon, for i3 bindings
     ncmpcpp # a command line, client interface for mpd the music player daemon
@@ -370,6 +361,7 @@
     uid = 1000;
     home = "/home/jlucas";
     createHome = true;
+    shell = "/run/current-system/sw/bin/fish";
     extraGroups = [ "wheel" "audio" "networkmanager" "docker"];
     initialPassword = "1234";
     #TODO

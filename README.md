@@ -29,7 +29,7 @@ Each time you switch have to :
 * systemd-boot instead of rEFInd
 * i3 as window manager
 * icon-theme "rodent" default in xfce instead of gnome-humanity
-* oh-my-zsh instead of grml
+* [fish](https://nixos.wiki/wiki/Fish) instead of grml
 
 ## Common commands
 
@@ -95,10 +95,40 @@ Install the "Dark reader" extension and "Dark" theme within Firefox.
 echo '.browserContainer { background-color: #000000 !important; }' >> .mozilla/firefox/ir3ucze0.default/chrome/userChrome.css
 ```
 
+## Install and run OnlyOffice through docker
+
+There is no NixOS package for OnlyOffice yet. OnlyOffice AppImage or tarball both use binary dependencies compliant with the FHS. These packages do not play well with nixos thus the docker image seems the best way to [install OnlyOffice](https://hub.docker.com/r/onlyoffice/communityserver#installing-onlyoffice-community-server-integrated-with-document-and-mail-servers).
+
+```bash
+wget http://download.onlyoffice.com/install/opensource-install.sh
+bash opensource-install.sh -md yourdomain.com
+```
+
+In my case, the domain is localhost, thus replace `yourdomain.com` by `localhost`.
+
+Once installed and launched,  open a browser and go to the url `localhost`. It will open a javascript page and setup OnlyOffice.
+
+## Auto-mount usb removable media with [udiskie](https://github.com/coldfix/udiskie)
+xfce settings-manager >  Session and startup > Application autostart, and add 
+```bash
+udiskie --tray
+```
+
+## Configure fish shell
+
+Copy this repository `.config/fish` folder, then/or
+```fish
+fish_config 
+```
+
+NB: the preview of the shell prompt depends on the current folder when you exec `fish_config`.
+If you want to preview the git hints, be sure to be in a git versioned folder.
+
 ## TIPS
 "Unlock" the panel of xfce if you want to move it. This can be done in the preference of the panel.
 
 ## TODO
 [solve annoying prompt for nextcloud client](https://github.com/NixOS/nixpkgs/issues/38266)
 
-install missing [antidote](https://antidote.info/fr)
+Install missing [antidote](https://antidote.info/fr)
+

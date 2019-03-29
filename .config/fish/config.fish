@@ -1,0 +1,1 @@
+# put here commands executed at each fish login (equivalent to ~/.bashrc)
