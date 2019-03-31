@@ -51,16 +51,24 @@ Uninstall a package
 nix-env -e package
 ```
 
-```bash
-ranger --copy-config=all
-```
-
 ## Bluetooth (for Bose Quiet Confort 35)
 
 [This](http://www.planet-libre.org/index.php?post_id=21101) helped and [this](https://nixos.wiki/wiki/Bluetooth) also.
 [This](https://askubuntu.com/a/773391) was very useful.
 
-## Overlays
+## Solve audio issues
+
+If, when you plug a headset via a jack plug, the hotplug activation yields a loud crackling sound, it might be a larsen.
+I solved a larsen by just lowering lowering (or muting) the headset microphone. Do it via alsamixer if it's not feasible via pavucontrol.
+
+Beware plug'in jack headset with hotplug, your ears may suffer !
+
+If pavucontrol is not showing all output sources, you may want to reset pulseaudio user settings.
+```bash
+rm -rf ~/.config/pulseaudio
+```
+
+## Nix overlays
 
 [A comprehensible example](https://stackoverflow.com/a/50783276) and [some explanations](https://stackoverflow.com/a/53537841).
 
@@ -106,7 +114,14 @@ bash opensource-install.sh -md yourdomain.com
 
 In my case, the domain is localhost, thus replace `yourdomain.com` by `localhost`.
 
-Once installed and launched,  open a browser and go to the url `localhost`. It will open a javascript page and setup OnlyOffice.
+Once installed and launched, open a browser and go to the url `localhost`. It will open a javascript page and setup OnlyOffice.
+
+EDIT : 
+
+With previous installation [NGINX workers](https://stackoverflow.com/questions/23386986/what-is-worker-processes-and-worker-connections-in-nginx) where allocating too much RAM (around 8Go) and it was not easy to configure that, even with NGINX_* env variables in onlyoffice docker containers. 
+
+Tried unsuccesfuly to use [docker-compose](https://github.com/ONLYOFFICE/Docker-CommunityServer/issues/42).
+After that a new problem was to configure nginx to "listen localhost" (allow requests from localhost).
 
 ## Auto-mount usb removable media with [udiskie](https://github.com/coldfix/udiskie)
 xfce settings-manager >  Session and startup > Application autostart, and add 
@@ -126,6 +141,16 @@ If you want to preview the git hints, be sure to be in a git versioned folder.
 
 ## TIPS
 "Unlock" the panel of xfce if you want to move it. This can be done in the preference of the panel.
+
+Clear systemd journals older than X days
+```bash
+journalctl --vacuum-time=10d
+```
+
+Clear systemd journals if they exceed X storage
+```bash
+journalctl --vacuum-size=2G
+```
 
 ## TODO
 [solve annoying prompt for nextcloud client](https://github.com/NixOS/nixpkgs/issues/38266)
