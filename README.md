@@ -139,6 +139,34 @@ fish_config
 NB: the preview of the shell prompt depends on the current folder when you exec `fish_config`.
 If you want to preview the git hints, be sure to be in a git versioned folder.
 
+## home-manager
+
+Follow the [installation procedure](https://github.com/rycee/home-manager)
+
+During a new install
+```bash
+mkdir $HOME/Dev/nixos
+git clone https://github.com/JosephLucas/nixos.git
+mkdir -p .config/nixpkgs
+ln -s $HOME/Dev/nixos/.config/nixpkgs/home.nix .config/nixpkgs/home.nix
+```
+
+## Change colors of the xfce-terminal
+
+In xfce4-terminal Edit > Preferences > Colors and edit the specific color
+
+## Integrate pycharm to NixOS with i3
+
+```
+pycharm-community diff file1 file2
+pycharm-community merge file1 file2 file1
+```
+
+(in Help | Edit custom properties...)
+[Adding suppress.focus.stealing=false in custom properties fixes](https://intellij-support.jetbrains.com/hc/en-us/community/posts/360001411659-Lose-Focus-after-Switching-Workspace-in-i3wm) an issue in Pycharm within i3wm.
+
+With the associated i3 config, all windows of pycharm open in `ws1`. Set `ws1` in tabulated (mod+w) for an optimised workflow. 
+
 ## TIPS
 "Unlock" the panel of xfce if you want to move it. This can be done in the preference of the panel.
 

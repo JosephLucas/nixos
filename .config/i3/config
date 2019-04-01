@@ -193,3 +193,8 @@ bindsym XF86AudioPrev exec mpc prev
 
 # https://www.reddit.com/r/i3wm/comments/8gh4c0/working_fix_for_focusing_intellij_popups/
 for_window [class="^jetbrains-.+"][window_type=dialog] focus
+
+# Assign all newly created windows of pycharm to the 1st workspace
+assign [class="^.*jetbrains-pycharm.*$"] → $ws1
+# Open all new windows of pycharm in fullscreen
+# for_window [class="^.*jetbrains-pycharm.*$"] fullscreen enable
