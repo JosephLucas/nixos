@@ -30,5 +30,6 @@ in
       recursive = true; # recursively create subfolders and copy config files
     };
     ".config/i3/config".source = dotfiles + /i3/config;
+    ".gitconfig".source = dotfiles + /.gitconfig;
   };
 }
