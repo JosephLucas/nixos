@@ -190,15 +190,12 @@ In xfce4-terminal Edit > Preferences > Colors and edit the specific color
 
 ## Integrate pycharm to NixOS with i3
 
-```
-pycharm-community diff file1 file2
-pycharm-community merge file1 file2 file1
-```
-
 (in Help | Edit custom properties...)
-[Adding suppress.focus.stealing=false in custom properties fixes](https://intellij-support.jetbrains.com/hc/en-us/community/posts/360001411659-Lose-Focus-after-Switching-Workspace-in-i3wm) an issue in Pycharm within i3wm.
+[Adding suppress.focus.stealing=false in custom properties fixes](https://intellij-support.jetbrains.com/hc/en-us/community/posts/360001411659-Lose-Focus-after-Switching-Workspace-in-i3wm).
 
-With the associated i3 config, all windows of pycharm open in `ws1`. Set `ws1` in tabulated (mod+w) for an optimised workflow. 
+With the associated i3 config, all windows of pycharm open in `ws1`. Set `ws1` in tabulated (mod+w) for an optimised workflow.
+
+Associated .gitconfig allows to use pycharm diff and merge tools.
 
 ## TIPS
 "Unlock" the panel of xfce if you want to move it. This can be done in the preference of the panel.
