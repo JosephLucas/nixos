@@ -224,6 +224,36 @@ Clear systemd journals if they exceed X storage
 journalctl --vacuum-size=2G
 ```
 
+### Beware some packages
+
+#### busybox
+Beware the "busybox" package, it seems to disturb the standard functioning of some commands. 
+For instance `ps` wont have anymore the -p option if busybox is installed.
+
+#### pstree
+nix-env -iA nixos.pstree does not install the real pstree, since the former would return:
+```bash
+pstree $Revision: 2.39 $ by Fred Hucht (C) 1993-2015
+EMail: fred AT thp.uni-due.de
+
+Usage: pstree [-f file] [-g n] [-l n] [-u user] [-U] [-s string] [-p pid] [-w] [pid ...]
+   -f file   read input from <file> (- is stdin) instead of running
+             "ps -eo uid,pid,ppid,pgid,args"
+   -g n      use graphics chars for tree. n=1: IBM-850, n=2: VT100, n=3: UTF-8
+   -l n      print tree to n level deep
+   -u user   show only branches containing processes of <user>
+   -U        don't show branches containing only root processes
+   -s string show only branches containing process with <string> in commandline
+   -p pid    show only branches containing process <pid>
+   -w        wide output, not truncated to window width
+   pid ...   process ids to start from, default is 1 (probably init)
+
+Process group leaders are marked with '='.
+```
+that seems to correspond to https://github.com/tmm1/pstree which is not the expected pstree.
+
+Install expected pstree through nixos.pismic.
+
 ## TODO
 [solve annoying prompt for nextcloud client](https://github.com/NixOS/nixpkgs/issues/38266)
 
