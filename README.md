@@ -88,13 +88,46 @@ cp -r rc ~/.config/texstudio/
 ```
 Then load `$HOME/.config/texstudio/dark_theme.txsprofile` in texstudio : Option->Load Profiles... 
 
-## Firefox dark theme
+## Firefox 
+
+### Security
+
+[Good read](https://restoreprivacy.com/) about security/privacy on the web.
+
+Sites to test security/privacy:
+* browserprint.info
+* amiunique.org/ 
+* panopticlick.eff.org/
+* privacy.net/analyzer/
+
+Add a "master password" to secure the access to passwords registered in firefox.
+
+Install uBlock, CanvasBlocker, Decentraleyes firefox extensions.
+
+#### [Protection optimised user configuration](https://github.com/pyllyukko/user.js/tree/relaxed#installation).
+
+Create a new firefox profile directory with the "Profile Manager", executed with
+```bash
+firefox --no-remote -P
+```
+
+Then load the user config 
+```
+mkdir -p ~/Dev && cd ~/Dev
+git clone -b relaxed https://github.com/pyllyukko/user.js 
+ln -s $HOME/Dev/user.js/user.js $HOME/.mozilla/firefox/mermiu44.jlucas/
+```
+
+### Dark theme
 
 Make sure the `shadowfox` nixos package is installed, then
 ```bash
 shadowfox-updater
 ```
-With tab enter, select Install/Update. Then exit and start firefox.
+With tab/enter:
+ 1. select your .mozilla/firefox/<profile> 
+ 2. Install/Update 
+ 3. exit and start firefox
 
 Install the "Dark reader" extension and "Dark" theme within Firefox.
 

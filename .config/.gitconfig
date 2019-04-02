@@ -1,7 +1,12 @@
 [user]
 	name = Joseph Lucas
 	email = lucas.jojo@gmail.com
-[diff]
-	tool = kdiff3
+
 [merge]
-	tool = kdiff3
+        tool = pycharmmerge
+[mergetool "pycharmmerge"]
+        cmd = pycharm-community merge "$LOCAL" "$REMOTE" "$BASE" "$MERGED"
+[diff]
+        tool = pycharmdiff
+[difftool "pycharmdiff"]
+        cmd = pycharm-community diff "$LOCAL" "$REMOTE"
