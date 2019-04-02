@@ -118,6 +118,20 @@ git clone -b relaxed https://github.com/pyllyukko/user.js
 ln -s $HOME/Dev/user.js/user.js $HOME/.mozilla/firefox/mermiu44.jlucas/
 ```
 
+### Configure search tools
+
+Install "Search Google Scholar" extension.
+
+Go to Preferences > Search > One click search engines
+
+Add a keyword to preferred search engines.
+
+To use a specific search engine:
+ 1. select the bar
+ 2. tap the keyboard plus a space
+ 3. continue with request
+
+
 ### Dark theme
 
 Make sure the `shadowfox` nixos package is installed, then
