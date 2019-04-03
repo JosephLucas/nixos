@@ -131,6 +131,9 @@ To use a specific search engine:
  2. tap the keyboard plus a space
  3. continue with request
 
+### spell-checker
+
+Install `French Spelling Dictionnary`. In text field it is now possible to use this spellchecker with the right button. 
 
 ### Dark theme
 
@@ -149,6 +152,13 @@ Install the "Dark reader" extension and "Dark" theme within Firefox.
 ```bash
 echo '.browserContainer { background-color: #000000 !important; }' >> .mozilla/firefox/ir3ucze0.default/chrome/userChrome.css
 ```
+
+## Thunderbird 
+
+[Thunderbird'support of Gmail](https://support.mozilla.org/en-US/kb/thunderbird-and-gmail) and [Gmail's support of Thunderbird](https://support.mozilla.org/en-US/kb/thunderbird-and-gmail).
+
+TODO :
+* Design a backup workflow for [the file with mail filters](https://askubuntu.com/a/184293).
 
 ## Install and run OnlyOffice through docker
 
@@ -198,9 +208,18 @@ mkdir -p .config/nixpkgs
 ln -s $HOME/Dev/nixos/.config/nixpkgs/home.nix .config/nixpkgs/home.nix
 ```
 
-## Change colors of the xfce-terminal
+## XFCE
 
-In xfce4-terminal Edit > Preferences > Colors and edit the specific color
+### Configure colors of the xfce-terminal
+
+In xfce4-terminal: Edit > Preferences > Colors and edit the specific color
+
+### Themes
+
+In `xfce4-settings-manager` > Appearance:
+
+* "Tango" icon theme
+* "Adwaita dark" style, a gtk2 and gtk3 theme
 
 ## Integrate pycharm to NixOS with i3
 
@@ -259,3 +278,4 @@ Install expected pstree through nixos.pismic.
 
 Install missing [antidote](https://antidote.info/fr)
 
+Install and pair LineageOS for mobile phone.

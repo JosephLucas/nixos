@@ -88,7 +88,7 @@
   fonts.fonts = with pkgs; [ 
     corefonts # Micrsoft free fonts
     inconsolata  # monospaced
-    nerdfonts # popular 'iconic fonts' 
+    nerdfonts # popular 'iconic fonts' (warning, it is huge: 1.7G)
     iosevka
   ];
   fonts.fontconfig.defaultFonts.monospace = [ "Inconsolata" ];
@@ -105,7 +105,9 @@
 
   # e.g. steam package has a non-free licence
   nixpkgs = {
-    config.allowUnfree = true;
+    config = {
+      allowUnfree = true;
+    };
     overlays =[ (import ./overlays/boseqc35.nix) ];
   };
 
@@ -116,6 +118,8 @@
     mosh.enable = true; # mobile shell, pour remplacer ssh+screen dans certains cas
     ssh.startAgent = true;
   };
+  
+  environment.variables.EDITOR = "vim";
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -129,7 +133,9 @@
         virtualenvwrapper
       ]; 
       python-with-my-packages = python3.withPackages my-python-packages;
-    in [   
+    in [
+    docker-compose
+
     # xfce4 goodies
     xfce.xfce4-panel
     xfce.xfce4-clipman-plugin
@@ -163,7 +169,7 @@
     pciutils # for lspci
     git
     wget
-    kdiff3
+    arc-theme # a gtk2 and gtk3 theme
     pandoc # universal conversion conversion of written file types
     texlive.combined.scheme-full # this is heavy
     texstudio
@@ -171,7 +177,8 @@
     vim
     w3m # a minimalist cmd line web browser with image previews
     htop
-    sysstat
+    sysstat # for iostats (I/O on disks)
+    nmap # stats of the network
     powertop # monitor energy consumption
     gnupg
     p7zip
@@ -197,6 +204,9 @@
     ranger # minimalist file explorator with vi key bindings and image previews
     zathura # minimalist document viewer
     anki # a small app for exercising memorisation on custom questions
+
+    keepassxc # manager of passwords
+    gnucash # manager of bank accounts
 
     # themes
     papirus-icon-theme
