@@ -157,6 +157,8 @@ echo '.browserContainer { background-color: #000000 !important; }' >> .mozilla/f
 
 [Thunderbird'support of Gmail](https://support.mozilla.org/en-US/kb/thunderbird-and-gmail) and [Gmail's support of Thunderbird](https://support.mozilla.org/en-US/kb/thunderbird-and-gmail).
 
+Install a french dictionary for spellchecking.
+
 TODO :
 * Design a backup workflow for [the file with mail filters](https://askubuntu.com/a/184293).
 
@@ -220,6 +222,27 @@ In `xfce4-settings-manager` > Appearance:
 
 * "Tango" icon theme
 * "Adwaita dark" style, a gtk2 and gtk3 theme
+
+### Keyboard
+
+To write french with a QWERTY: 
+ 1. go to settings-manager > keyboard > layout
+ 2. in layout option", set a shortcut to switch keyboard.
+ 3. add "English (US, intl. with dead keys)"
+ 
+ (a "dead key" is a key doing nothing when pressed once, e.g. \` is a dead key for this layout)
+ 
+ Then, add an item in the xfce panel to see the current keyboard.
+ 
+ When using this last keyboard:
+ 
+  | typing          | gives result |
+  |:---------------:|:------------:|
+  | \` + a          | à            |
+  | ´ + e           | é            |
+  | Alt + ´         | \'           |
+  | Alt + Shift + ¨ | "            |
+  
 
 ## Integrate pycharm to NixOS with i3
 
