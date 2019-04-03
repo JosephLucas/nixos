@@ -282,22 +282,23 @@
     };
 
     # music player daemon
+    # NB: mpd is a system-wide daemon (https://askubuntu.com/a/555484)
     mpd = {
       enable = true;
+      # FIXME : this next line seems contradictory with the system-wide functionning
       user = "jlucas";
       group = "users";
       musicDirectory = "/home/jlucas/Music";
       dataDir = "/home/jlucas/.mpd";
       extraConfig = ''
-       # metadata_to_use "artist,album,title,track,name,genre,date,composer,performer,disc,comment"
+        metadata_to_use "artist,album,title,track,name,genre,date,composer,performer,disc,comment"
         restore_paused "yes"
         audio_output {
           type     "pulse"
           name     "pulse audio"
+          server   "localhost" # for TCP connection to userspace pulseaudio servers
         }
       '';
-      network.listenAddress = "any";
-      startWhenNeeded = true;
     };
   };
 
@@ -305,6 +306,11 @@
     # Audio
     pulseaudio = {
       enable = true;
+      
+      # Pulse audio devices runs in user sessions
+      # The mpd (Music Player daemon) runs system-wide. Thus its necessary (untill userspace mpd) to communicate locally through TCP.
+      tcp.enable = true; # necessary to listen to non-systemwide (only root) mpd daemon, c.f. https://askubuntu.com/a/555484
+      
       # https://nixos.org/nixpkgs/manual/#sec-steam-play
       support32Bit = true;
       # https://nixos.wiki/wiki/Bluetooth
