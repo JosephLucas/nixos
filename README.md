@@ -306,4 +306,9 @@ Install and pair LineageOS for mobile phone.
 
 Pidgin with plugins for : whatsapp irc facebook googletalk skype steam battle.net
 
-Install instructions : copy "overlays" folder into /etc/nixos/
+Install instructions : 
+* copy "overlays" folder into /etc/nixos/
+...
+
+Explain file meanings:
+e.g. : dotfiles/.face is a png image used showing the user face in lightdm 

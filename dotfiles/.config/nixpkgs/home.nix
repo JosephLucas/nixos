@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 let
   # for installation, fetch from a url
-  dotfiles = /home/jlucas/Dev/nixos/.config;
+  dotfiles = /home/jlucas/Dev/nixos/dotfiles;
 in
 {
   # Let Home Manager install and manage itself.
@@ -26,10 +26,12 @@ in
   };
   home.file = {
     ".config/fish" = {
-      source = dotfiles + /fish;
+      source = dotfiles + /.config/fish;
       recursive = true; # recursively create subfolders and copy config files
     };
-    ".config/i3/config".source = dotfiles + /i3/config;
+    ".config/i3/config".source = dotfiles + /.config/i3/config;
     ".gitconfig".source = dotfiles + /.gitconfig;
+    # user face image (used at least in lightdm prompt)
+    ".face".source = dotfiles + /.face;
   };
 }
