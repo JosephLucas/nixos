@@ -138,6 +138,7 @@
 
     # xfce4 goodies
     xfce.xfce4-panel
+    xfce.xfce4-mpc-plugin # mpd panel plugin
     xfce.xfce4-clipman-plugin
     xfce.xfce4-datetime-plugin
     xfce.xfce4-pulseaudio-plugin
@@ -282,7 +283,14 @@
         # It is necessary to do this since the file in ~<user>/ subdir is not accessible by the lightdm user
         # (c.f. https://askubuntu.com/questions/671373/lightdm-does-not-have-permission-to-read-path-xubuntu-greeter-settings)
         background =  "${/home/jlucas/Dev/nixos/lightdm_backgroung.png}";
-        greeters.gtk.theme.name = "Adwaita-dark";
+        greeters.gtk = {
+          theme.name = "Adwaita-dark";
+          # lightdm will show the image ~<user>/.face for each user
+          # https://debian-facile.org/viewtopic.php?id=16365
+          extraConfig = ''
+            default-user-image = ~/.face
+          '';
+        };
       };
       
       # https://nixos.wiki/wiki/Xfce     + i3wm 
