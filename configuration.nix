@@ -194,12 +194,14 @@
 
     # GUI apps
     firefox 
+    pidgin # universal chat client (facebook, telegram, whatsapp, irc, ...)
     shadowfox # dark theme for preferences internal pages of firefox
     thunderbird
     jetbrains.pycharm-community
     nextcloud-client
     evince
     gimp
+    inkscape
     vlc
     ranger # minimalist file explorator with vi key bindings and image previews
     zathura # minimalist document viewer
@@ -273,8 +275,15 @@
       # here you can switch the used card at boot
       videoDrivers = [ "nvidia" ]; 
       # videoDrivers = [ "intel" ]; 
-      
-      displayManager.lightdm.enable = true;
+      displayManager.lightdm = {
+        enable = true;
+        # FIXME : lightdm background should be downloaded during first install
+        # ${...} is used to create a mini derivation. i.e. the file will be stored into /nix/store. (c.f. https://stackoverflow.com/a/43850372)
+        # It is necessary to do this since the file in ~<user>/ subdir is not accessible by the lightdm user
+        # (c.f. https://askubuntu.com/questions/671373/lightdm-does-not-have-permission-to-read-path-xubuntu-greeter-settings)
+        background =  "${/home/jlucas/Dev/nixos/lightdm_backgroung.png}";
+        greeters.gtk.theme.name = "Adwaita-dark";
+      };
       
       # https://nixos.wiki/wiki/Xfce     + i3wm 
       desktopManager = {

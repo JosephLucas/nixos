@@ -169,7 +169,7 @@ bindsym $mod+r mode "resize"
 font pango: Monospace 10
 
 # Wallpaper
-exec --no-startup-id feh --bg-scale /home/jlucas/Images/light-snow-night.jpg
+exec --no-startup-id feh --bg-scale "$HOME/Dev/nixos/background.jpg"
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 #bar {

@@ -156,6 +156,7 @@ echo '.browserContainer { background-color: #000000 !important; }' >> .mozilla/f
 ## Thunderbird 
 
 [Thunderbird'support of Gmail](https://support.mozilla.org/en-US/kb/thunderbird-and-gmail) and [Gmail's support of Thunderbird](https://support.mozilla.org/en-US/kb/thunderbird-and-gmail).
+[Comprehensive webpage support](http://kb.mozillazine.org/Using_Gmail_with_Thunderbird_and_Mozilla_Suite).
 
 Install a french dictionary for spellchecking.
 
@@ -242,7 +243,7 @@ To write french with a QWERTY:
   | ´ + e           | é            |
   | Alt + ´         | \'           |
   | Alt + Shift + ¨ | "            |
-  
+  | Alt + ,         | ç            |
 
 ## Integrate pycharm to NixOS with i3
 
@@ -302,3 +303,5 @@ Install expected pstree through nixos.pismic.
 Install missing [antidote](https://antidote.info/fr)
 
 Install and pair LineageOS for mobile phone.
+
+Pidgin with plugins for : whatsapp irc facebook googletalk skype steam battle.net
