@@ -183,8 +183,8 @@ exec --no-startup-id feh --bg-scale "$HOME/Dev/nixos/background.jpg"
 # xfce bar
 exec --no-startup-id xfce4-panel --disable-wm-check
 
-# https://www.youtube.com/watch?v=8-S0cWnLBKg
-bindsym $mod+shift+x exec i3lock
+# https://github.com/meskarune/i3lock-fancy
+bindsym $mod+shift+x exec i3lock-fancy
 
 bindsym XF86AudioPlay exec mpc toggle
 ##bindsym XF86AudioPause exec cmus-remote -u

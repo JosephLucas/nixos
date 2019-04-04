@@ -312,3 +312,7 @@ Install instructions :
 
 Explain file meanings:
 e.g. : dotfiles/.face is a png image used showing the user face in lightdm 
+
+Ristretto as an issue with thumbnails/preview images. Use feh instead, it is even more powerful.
+
+Add custom actions for thunar

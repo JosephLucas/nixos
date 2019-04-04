@@ -154,6 +154,8 @@
     # AFAIK udiskie supersedes thunar-volman
     # xfce.thunar-volman # thunar extension for removable disks
 
+    i3lock-fancy
+
     service-wrapper # convenient wrapper for systemctl
     pavucontrol # PulseAudio Volume Control
     blueman # bluetooth gtk client
