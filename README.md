@@ -38,7 +38,7 @@ Try some packages in the user space
 nix-env -iA package
 ```
 
-###Free some space
+### Free some space
 ```bash
 nix-collect-garbage --delete-older-than 3d
 ```
@@ -305,3 +305,5 @@ Install missing [antidote](https://antidote.info/fr)
 Install and pair LineageOS for mobile phone.
 
 Pidgin with plugins for : whatsapp irc facebook googletalk skype steam battle.net
+
+Install instructions : copy "overlays" folder into /etc/nixos/

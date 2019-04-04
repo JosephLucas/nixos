@@ -108,7 +108,7 @@
     config = {
       allowUnfree = true;
     };
-    overlays =[ (import ./overlays/boseqc35.nix) ];
+    overlays = map import [ ./overlays/boseqc35.nix ./overlays/pidgin.nix ];
   };
 
   # taken from https://github.com/paolobueno/nixos-config/blob/master/configuration.nix
@@ -194,7 +194,7 @@
 
     # GUI apps
     firefox 
-    pidgin # universal chat client (facebook, telegram, whatsapp, irc, ...)
+    overlayed-pidgin-with-plugins # client for all chats (facebook, telegram, whatsapp, irc, ...)
     shadowfox # dark theme for preferences internal pages of firefox
     thunderbird
     jetbrains.pycharm-community
