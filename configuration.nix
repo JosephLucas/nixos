@@ -215,6 +215,8 @@
     ranger # minimalist file explorator with vi key bindings and image previews
     zathura # minimalist document viewer
     anki # a small app for exercising memorisation on custom questions
+    recoll # powerfull search tool (can even search inside files)
+    # catfish # simple search tool (package is broken for now) # FIXME retry later
 
     keepassxc # manager of passwords
     gnucash # manager of bank accounts
