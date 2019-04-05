@@ -254,6 +254,38 @@ With the associated i3 config, all windows of pycharm open in `ws1`. Set `ws1` i
 
 Associated .gitconfig allows to use pycharm diff and merge tools.
 
+## Use [OpenDNS](https://en.wikipedia.org/wiki/OpenDNS)
+
+OpenDNS provides phishing protection and custom content filtering.
+Create an account on https://www.opendns.com/ and configure the remote dns server. 
+Add your IP network (the public ip) so that openDNS can recognise you.
+
+### Allow dynamic IP
+
+To handle a changing public IP, enable [ddclient](https://doc.ubuntu-fr.org/dns_dynamique).
+It will communicate the new IP to OpenDNS whenever the IP changes.
+
+Good reads
+https://github.com/NixOS/nixpkgs/blob/release-18.09/nixos/modules/services/networking/ddclient.nix
+https://support.opendns.com/hc/en-us/articles/227987727-Linux-IP-Updater-for-Dynamic-Networks
+https://github.com/NixOS/nixpkgs/issues/48432
+https://github.com/NixOS/nixpkgs/issues/24288
+
+Create a configuration file based on the associated ./secrets/ddclient.conf template file
+```bash
+su root
+mkdir -p /root/nixos/secrets/
+vim /root/nixos/secrets/ddclient.conf
+```
+Edit the <...> fields of the ddclient.conf file. Then, still as `root`
+```bash
+chown -R root:root /root/nixos/secrets
+sudo chmod -R 700  /root/nixos/secrets
+```
+
+[Disable ipv6](https://support.opendns.com/hc/en-us/community/posts/220040827/comments/224654527) since 
+"if using IPv6 connectivity (for DNS queries), the additional features of OpenDNS (content filtering, individual domain blocking, logs and stats, etc) do not take effect, because you cannot register your IPv6 address at https://dashboard.opendns.com/settings/ yet"
+
 ## TIPS
 "Unlock" the panel of xfce if you want to move it. This can be done in the preference of the panel.
 
@@ -265,6 +297,11 @@ journalctl --vacuum-time=10d
 Clear systemd journals if they exceed X storage
 ```bash
 journalctl --vacuum-size=2G
+```
+
+To debug dns lookups
+```bash
+nslookup -type=txt debug.opendns.com
 ```
 
 ### Beware some packages
@@ -316,3 +353,7 @@ e.g. : dotfiles/.face is a png image used showing the user face in lightdm
 Ristretto as an issue with thumbnails/preview images. Use feh instead, it is even more powerful.
 
 Add custom actions for thunar
+
+Create a package for "i3lock-fancier" instead of "i3lock-fancy" : to allow switching keyboard layout while the screen is locked and you type a password.
+
+https://www.reddit.com/r/i3wm/comments/3n7txe/i_cant_get_rid_of_the_loading_mouse_cursor_on/cvm28jt?utm_source=share&utm_medium=web2x

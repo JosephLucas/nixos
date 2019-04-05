@@ -69,6 +69,11 @@
   networking = {
     hostName = "nixos"; # Define your hostname.
 
+    # Due to WIP dashbord in openDNS (that only allows IPv4); active IPv6 would bypasses the content filtering
+    # https://support.opendns.com/hc/en-us/community/posts/220040827/comments/224654527
+    enableIPv6 = false;
+    nameservers = ["127.0.0.1"]; # to connect to local dns : dnscript service
+
     firewall.enable = true; # it''s true by default anyway. It is a "statefull firewall".
     # Open ports in the firewall. 
     # firewall.allowedTCPPorts = [ ... ];
@@ -133,9 +138,10 @@
         virtualenvwrapper
       ]; 
       python-with-my-packages = python3.withPackages my-python-packages;
+
     in [
     docker-compose
-
+    
     # xfce4 goodies
     xfce.xfce4-panel
     xfce.xfce4-mpc-plugin # mpd panel plugin
@@ -266,6 +272,15 @@
       enable = true;
       permitRootLogin = "no";
     };
+    dnscrypt-proxy = {
+      enable = true;
+      # A list of dns, with dnscript protocol enabled:
+      #  https://github.com/DNSCrypt/dnscrypt-resolvers/blob/master/v2/public-resolvers.md
+      # Depending on the need:
+      # resolverName = "cloudflare"; # will give best response time (what is often called "ping")
+      # "cisco" is the name of the IPv4 OpenDNS DNS sever (CISCO has bought OpenDNS)
+      resolverName = "cisco";
+    };
 
     # Enable the X11 windowing system.
     xserver = {
@@ -328,6 +343,18 @@
           server   "localhost" # for TCP connection to userspace pulseaudio servers
         }
       '';
+    };
+    ddclient = {
+      enable = true;
+      # IMPURITY !
+      # The config file is read directly to configure ddclient
+      # It is not recorded in the store at each rebuild
+      # This behaviour is due to:
+      # (i) the config file contains a password 
+      # (ii) the store is word-readable
+      # https://github.com/NixOS/nixpkgs/blob/release-18.09/nixos/modules/services/networking/ddclient.nix
+      # https://github.com/NixOS/nixpkgs/issues/24288
+      configFile = /root/nixos/secrets/ddclient.conf;
     };
   };
 
