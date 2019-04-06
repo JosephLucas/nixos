@@ -341,8 +341,6 @@ Install missing [antidote](https://antidote.info/fr)
 
 Install and pair LineageOS for mobile phone.
 
-Pidgin with plugins for : whatsapp irc facebook googletalk skype steam battle.net
-
 Install instructions : 
 * copy "overlays" folder into /etc/nixos/
 ...
@@ -357,3 +355,5 @@ Add custom actions for thunar
 Create a package for "i3lock-fancier" instead of "i3lock-fancy" : to allow switching keyboard layout while the screen is locked and you type a password.
 
 https://www.reddit.com/r/i3wm/comments/3n7txe/i_cant_get_rid_of_the_loading_mouse_cursor_on/cvm28jt?utm_source=share&utm_medium=web2x
+
+Icons are in /run/current-system/sw/share/icons/
