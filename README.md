@@ -357,3 +357,11 @@ Create a package for "i3lock-fancier" instead of "i3lock-fancy" : to allow switc
 https://www.reddit.com/r/i3wm/comments/3n7txe/i_cant_get_rid_of_the_loading_mouse_cursor_on/cvm28jt?utm_source=share&utm_medium=web2x
 
 Icons are in /run/current-system/sw/share/icons/
+
+TIPP10 lear to type efficiently
+
+# udev rule for usb hotplug
+https://unix.stackexchange.com/a/86425
+
+# article of xfce over mounting removable media
+https://docs.xfce.org/xfce/thunar/using-removable-media
