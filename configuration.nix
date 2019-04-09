@@ -164,6 +164,7 @@
 
     service-wrapper # convenient wrapper for systemctl
     pavucontrol # PulseAudio Volume Control
+    pulseeffects # equlizer and other tools for pulseaudio
     blueman # bluetooth gtk client
     boseqc35
 
@@ -211,7 +212,8 @@
     evince
     gimp
     inkscape
-    vlc
+    vlc # might be superseded by mpv + ncmcpp
+    mpv # A high-end video player
     ranger # minimalist file explorator with vi key bindings and image previews
     zathura # minimalist document viewer
     anki # a small app for exercising memorisation on custom questions
