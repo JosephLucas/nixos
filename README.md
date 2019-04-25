@@ -13,13 +13,13 @@ Use the `Dell Update` utility to get latest EFI/BIOS firmware and latest OS Reco
 3. Defragment the windows partition with [Macrorit](https://macrorit.com/).  
 4. Resize the windows partition, still with Macrorit.
 
-If you plan to use another tool to defrag (e.g. _UltraDefrag_ or _PerfectDisk_), perform a bootime defragmentation to get rid of otherwise unmovable system files. Nevertheless, sometimes, due to stuck metadata in the middle of the NTFS part you might not be able to reduce the size of the windows partition above 50%.
+If you plan to use another tool to defrag (e.g. _UltraDefrag_ or _PerfectDisk_), perform a _boot time_ defragmentation to get rid of otherwise unmovable system files. Nevertheless, sometimes, due to stuck metadata in the middle of the NTFS part you might not be able to reduce the size of the windows partition above 50%.
 
 ### Create a NixOS live USB installer
 
 1. Download the latest NixOS iso
-2. Using _Rufus_, create the live USB. Check that it is labeled NIXOS_ISO; this was important otherwise i got a 
-  "squashfs error... unable to read id index table."). A MBR partition table worked. 
+2. Using _Rufus_, create the live USB. Check that it is labeled NIXOS_ISO otherwise you may get a 
+  "squashfs error... unable to read id index table."). A MBR partition table worked.
 
 ### Create a live USB from a linux distribution 
 
@@ -37,7 +37,10 @@ On hardware config menu (F2 while booting):
 * For recent BIOS version (e.g. 1.8.1) _Enable Legacy Option ROMs_ in Settings > General > Advanced Boot Options. 
 * Switch off secure boot
 
-In cases, _legacy mode_ might be useful to boot on the live USB.
+In some cases, _legacy mode_ might be useful to boot on the live USB.
+
+You may need to boot twice to see the USB in the list of bootloaders, 
+first boot seems to detect the USB bootloader but do not show it.
 
 On bootloader menu (F12 while booting), select the USB stick. 
 
@@ -55,7 +58,7 @@ mkfs.ext4 -L NIXOS /dev/mapper/enc-dev
 
 ### Create an ESP
 
-In addition to the root partition, you need an ESP. If it does not exist, target a 512 MiB, fat32 partition labeled ESP.
+In addition to the root partition, you need an ESP. If it does not already exist, target a 512 MiB, fat32 partition labeled ESP.
 
 ## Install NixOS
 
@@ -148,16 +151,22 @@ Log out and log in (duno why but seemed necessary). Then do install home-manager
 nix-shell '<home-manager>' -A install
 ```
 
-## XFCE
+### Use Windows-NixOS dual boot
 
-### Themes
+Before switching, it is necessary to :
+(i) activate RAID (ii) activate "secure boot"; for booting on Windows 
+(i) activate AHCI (ii) deactivate "secure boot"; for booting on systemd-boot/NIXOS
+
+## Themes
 
 In `xfce4-settings-manager` > Appearance:
 
 * "Tango" icon theme
 * "Adwaita dark" style, a gtk2 and gtk3 theme
 
-### Keyboard
+For applications using the Qt GUI library, use `qt5ct` application to adjust the theme.
+
+## Keyboard
 
 Enable writing french with a QWERTY: 
  1. go to settings-manager > keyboard > layout
@@ -178,15 +187,9 @@ Enable writing french with a QWERTY:
   | Alt + Shift + ¨ | "            |
   | Alt + ,         | ç            |
 
-### Configure colors of the xfce-terminal
+## Configure colors of the xfce-terminal
 
 In xfce4-terminal: Edit > Preferences > Colors and edit the specific color
-
-### Use Windows-NixOS dual boot
-
-Before switching, it is necessary to :
-(i) activate RAID (ii) activate "secure boot"; for booting on Windows 
-(i) activate AHCI (ii) deactivate "secure boot"; for booting on systemd-boot/NIXOS
 
 ## Auto-start some applications 
 
@@ -278,9 +281,7 @@ rm -r ~/.purple
 ```
 
 ## Bluetooth (for Bose Quiet Confort 35)
-
-[This](http://www.planet-libre.org/index.php?post_id=21101) helped and [this](https://nixos.wiki/wiki/Bluetooth) also.
-[This](https://askubuntu.com/a/773391) was very useful.
+[Some](http://www.planet-libre.org/index.php?post_id=21101) [good](https://nixos.wiki/wiki/Bluetooth) [reads](https://askubuntu.com/a/773391).
 
 ## Solve audio issues
 
@@ -293,22 +294,6 @@ If pavucontrol is not showing all output sources, you may want to reset pulseaud
 ```bash
 rm -rf ~/.config/pulseaudio
 ```
-
-## TeXstudio dark theme
-
-See https://github.com/texstudio-org/texstudio/issues/45
-```
-wget https://www.dropbox.com/s/imkvx08gsjtzww8/TeXstudio_francesco_dark.rar
-unar Downloads/TeXstudio_francesco_dark.rar
-cd TeXstudio_francesco_dark
-```
-Read the README and install
-```
-sed 's/Interface\\Language=fr/Interface\\Language=fr/g' francesco_dark_win.txsprofile > $HOME/.config/texstudio/dark_theme.txsprofile
-sed "s%C:/Users/franc/AppData/Roaming/TeXstudio/rc/%$HOME/.config/texstudio/%g" stylesheet.qss > $HOME/.config/texstudio/stylesheet.qss
-cp -r rc ~/.config/texstudio/
-```
-Then load `$HOME/.config/texstudio/dark_theme.txsprofile` in texstudio : Option->Load Profiles... 
 
 ## Install and run OnlyOffice through docker
 
@@ -497,36 +482,6 @@ To debug dns lookups
 nslookup -type=txt debug.opendns.com
 ```
 
-## TODO
-[solve annoying prompt for nextcloud client](https://github.com/NixOS/nixpkgs/issues/38266)
-
-Install missing [antidote](https://antidote.info/fr)
-
-Install and pair LineageOS for mobile phone.
-
-Install instructions : 
-* copy "overlays" folder into /etc/nixos/
-...
-
-Explain file meanings:
-e.g. : dotfiles/.face is a png image used showing the user face in lightdm 
-
-Ristretto as an issue with thumbnails/preview images. Use feh instead, it is even more powerful.
-
-Add custom actions for thunar
-
-Create a package for "i3lock-fancier" instead of "i3lock-fancy" : to allow switching keyboard layout while the screen is locked and you type a password.
-
-https://www.reddit.com/r/i3wm/comments/3n7txe/i_cant_get_rid_of_the_loading_mouse_cursor_on/cvm28jt?utm_source=share&utm_medium=web2x
-
-Icons are in /run/current-system/sw/share/icons/
-
-TIPP10 lear to type efficiently
-
-[udev rule for usb hotplug](https://unix.stackexchange.com/a/86425)
-
-[article of xfce over mounting removable media](https://docs.xfce.org/xfce/thunar/using-removable-media)
-
 ## Check-list for a backup
 
 The state of NixOS is backed up through the commited configuration.nix and the state of user configurations (dotfiles/wallpapers) are commited through home-manager home.nix and some commited files (wallpapers) too.
@@ -538,10 +493,35 @@ These files/folders that should be backed up by hand, are:
 * Thunderbird [mail filters](https://askubuntu.com/a/184293) ./thunderbird/.../msgFilterRules.dat
 * XFCE config files .config/xfce (FIXME: didn'tried yet to restore them)
 
-
-
 ## Main differences with the [install of arch linux on an ASUS zenbook pro UX32VD](https://github.com/JosephLucas/archlinux_installation): 
 * systemd-boot instead of rEFInd
-* i3 as window manager
-* icon-theme "rodent" default in xfce instead of gnome-humanity
-* [fish](https://nixos.wiki/wiki/Fish) instead of grml
+* i3 instead of xfce window manager
+* icon-theme "tango" (already in default in xfce) instead of gnome-humanity
+* [fish](https://nixos.wiki/wiki/Fish) shell instead of grml zsh
+
+## TODO
+[solve annoying prompt for nextcloud client](https://github.com/NixOS/nixpkgs/issues/38266)
+
+Install missing [antidote](https://antidote.info/fr)
+
+Install and pair LineageOS for mobile phone.
+
+Explain file meanings:
+e.g. : dotfiles/.face is a png image used showing the user face in lightdm 
+
+Ristretto as an issue with thumbnails/preview images. Use feh instead, it is even more powerful.
+
+Add custom actions for Thunar
+
+Create a package for "i3lock-fancier" instead of "i3lock-fancy" : to allow switching keyboard layout while the screen is locked and you type a password.
+
+https://www.reddit.com/r/i3wm/comments/3n7txe/i_cant_get_rid_of_the_loading_mouse_cursor_on/cvm28jt?utm_source=share&utm_medium=web2x
+
+Icons are in /run/current-system/sw/share/icons/
+
+Do TIPP10: learn to type efficiently
+
+[udev rule for usb hotplug](https://unix.stackexchange.com/a/86425)
+
+[article of xfce over mounting removable media](https://docs.xfce.org/xfce/thunar/using-removable-media)
+
