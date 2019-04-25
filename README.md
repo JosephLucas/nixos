@@ -48,7 +48,9 @@ The root partition can be
 * unencrypted : `mkfs.ext4 -L NIXOS /dev/xxx`, or
 * encrypted :
 ```bash
-TODO
+cryptsetup luksFormat /dev/xxx # encrypt
+luksOpen /dev/xxx enc-dev # open encryption; enc-dev is arbitrary and means encrypted-device
+mkfs.ext4 -L NIXOS /dev/mapper/enc-dev
 ```
 
 ### Create an ESP
