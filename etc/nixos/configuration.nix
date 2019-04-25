@@ -21,10 +21,10 @@
    { device = "/swapfile"; size = 15318;} # MiB
    # The swapfile will mainly be used for hibernation, it can be removed if space is needed.    
   ];
-
+  
   boot = {
-    kernelPackages = pkgs.linuxPackages_4_20;
-    
+    kernelPackages = pkgs.linuxPackages_latest;
+
     kernelParams = [
        # many parameters are from : https://github.com/JackHack96/dell-xps-9570-ubuntu-respin#manual-respin-procedure
        "acpi_osi=Linux"
@@ -58,12 +58,12 @@
     # FIXME: use a kernel module for fans ?
     # https://github.com/torvalds/linux/blob/master/drivers/hwmon/dell-smm-hwmon.c
     # options dell-smm-hwmon restricted=0 force=1
-    
+
     loader.systemd-boot.enable = true;
     loader.efi.canTouchEfiVariables = true;
     blacklistedKernelModules = [ "nouveau" ]; # blacklist the opensource nvidia driver that does not work well and might conflict with proprietary nvidia driver
   };
-
+  
   virtualisation.docker.enable = true; # dont forget to add the user in the docker group
 
   networking = {
@@ -90,7 +90,7 @@
     # the interface is found using "ip link show"
   };
 
-  fonts.fonts = with pkgs; [ 
+  fonts.fonts = with pkgs; [
     corefonts # Micrsoft free fonts
     inconsolata  # monospaced
     nerdfonts # popular 'iconic fonts' (warning, it is huge: 1.7G)
@@ -122,6 +122,7 @@
     adb.enable = true; # android debuger, for smartphone
     mosh.enable = true; # mobile shell, pour remplacer ssh+screen dans certains cas
     ssh.startAgent = true;
+    qt5ct.enable = true; # allow to use at5ct to configure Qt5 GUI themes
   };
   
   environment.variables.EDITOR = "vim";
@@ -161,6 +162,7 @@
     # xfce.thunar-volman # thunar extension for removable disks
 
     i3lock-fancy
+    rofi
 
     service-wrapper # convenient wrapper for systemctl
     pavucontrol # PulseAudio Volume Control
@@ -254,6 +256,14 @@
   sound.enable = true;
 
   services = {
+    compton = {
+      enable          = true;
+      inactiveOpacity = "0.95";
+      #fade            = true;
+      #fadeDelta       = 4;
+      #shadow          = true;
+    };
+
     samba.enable = true;
     # hardware management
     fstrim.enable = true; # ssd disk optimisation
@@ -295,15 +305,14 @@
       libinput.enable = true;
       
       # here you can switch the used card at boot
-      videoDrivers = [ "nvidia" ]; 
-      # videoDrivers = [ "intel" ]; 
+      videoDrivers = [ "nvidia" ];
       displayManager.lightdm = {
         enable = true;
         # FIXME : lightdm background should be downloaded during first install
         # ${...} is used to create a mini derivation. i.e. the file will be stored into /nix/store. (c.f. https://stackoverflow.com/a/43850372)
         # It is necessary to do this since the file in ~<user>/ subdir is not accessible by the lightdm user
         # (c.f. https://askubuntu.com/questions/671373/lightdm-does-not-have-permission-to-read-path-xubuntu-greeter-settings)
-        background =  "${/home/jlucas/Dev/nixos/lightdm_backgroung.png}";
+        background =  "${/root/nixos/lightdm_backgroung.png}";
         greeters.gtk = {
           theme.name = "Adwaita-dark";
           # lightdm will show the image ~<user>/.face for each user
@@ -401,7 +410,7 @@
       };
     };
 
-    # An alternative solution for switchable graphic cards that works 
+    # An alternative solution for switchable graphic cards that works
     ### bumblebee
     #bumblebee = {
     #  enable = true;
