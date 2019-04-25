@@ -1,104 +1,196 @@
 # [NixOS](https://nixos.org/) installation on a Dell XPS 15 9570
  
-## Prepare installation from a pre-existing Windows 10 :
-* Update the EFI/BIOS firmware to the latest version
-* Free space and defrag disk (use PerfectDisk or UltraDefrag). Perform a "bootime defrag" otherwise some system files are locked. Be aware that a NTFS file system has metadata stuck right in the middle of the partition and it is not easy to move them.
-* Due to stuck metadata, reduce the size of the window partition to 50%, this makes room for the NIXOS partition.
-* Create a live USB from a downloaded NixOS iso. Label it NIXOS_ISO (this was important otherwise i got a 
-  "squashfs error... unable to read id index table.").
+## Install NixOS alongside a pre-existing Windows 10:
 
-## Create a live USB from a linux distribution: 
+### Update BIOS firmwares and BIOS utilities
+
+Use the `Dell Update` utility to get latest EFI/BIOS firmware and latest OS Recovery Tool versions. 
+
+### Get room for NIXOS
+
+1. Free as much disk space as possible by removing/uninstalling unused files and softwares
+2. Unencrypt the disk by disabling _BitLocker_ in order to unlock next defrag/resize actions. Un-encryption can be done through the settings manager. Beware that un-encryption takes several minutes.
+3. Defragment the windows partition with [Macrorit](https://macrorit.com/).  
+4. Resize the windows partition, still with Macrorit.
+
+If you plan to use another tool to defrag (e.g. _UltraDefrag_ or _PerfectDisk_), perform a bootime defragmentation to get rid of otherwise unmovable system files. Nevertheless, sometimes, due to stuck metadata in the middle of the NTFS part you might not be able to reduce the size of the windows partition above 50%.
+
+### Create a NixOS live USB installer
+
+1. Download the latest NixOS iso
+2. Using _Rufus_, create the live USB. Check that it is labeled NIXOS_ISO; this was important otherwise i got a 
+  "squashfs error... unable to read id index table."). A MBR partition table worked. 
+
+### Create a live USB from a linux distribution 
 
 1. `lsblk` to get the device with the usb stick (e.g. `/dev/sdX`) 
 2. `sudo cfdisk /dev/sdX` and remove all partitions, then enter `Write` and validate by typing `yes` 
 3. Copy all binary data from the iso to the bare usb stick device
 ```
-sudo dd if=nixos-graphical-18.09.2474.222950952f1-x86_64-linux.iso of=/dev/sda status=progress
+sudo dd if=nixos-graphical-XXX-linux.iso of=/dev/sda status=progress
 ```
 
+### Boot with the live USB
+
 On hardware config menu (F2 while booting):
-* deactivate RAID and activate AHCI instead. Otherwise you won't be able to mount the device before installation.
-* For recent BIOS version (e.g. 1.8.1) `Enable Legacy Option ROMs` in Settings > General > Advanced Boot Options. 
+* Deactivate RAID and activate AHCI instead. Otherwise the live NIXOS won't see the RAID device before installation.
+* For recent BIOS version (e.g. 1.8.1) _Enable Legacy Option ROMs_ in Settings > General > Advanced Boot Options. 
+* Switch off secure boot
 
-On Bootmenu (F12 while booting)
-* try to switch off secure boot to start the live usb, if it does not work try legacy mode
+In cases, _legacy mode_ might be useful to boot on the live USB.
 
-On the live NIXOS:
-* create a 512 MiB, fat32 partition labeled ESP for the UEFI ESP
-* create another partition for / (root) that will contain home and the swap file.
-* `mkfs.ext4 /dev/xxx`, `e2label /dev/xxx NIXOS`
-* install using configuration.nix and hardware-configuration.nix
+On bootloader menu (F12 while booting), select the USB stick. 
 
-On NIXOS:
-* the X server was not working until I updated the kernel (pkgs.linuxPackages_latest). `nomodeset` kernelParam might also help.
+### Create a root partition
 
-## Use dual boot
-Each time you switch have to :
+The root partition for / (root), will contain /home and the swap file.
+The root partition can be
+* unencrypted : `mkfs.ext4 -L NIXOS /dev/xxx`, or
+* encrypted :
+```bash
+TODO
+```
+
+### Create an ESP
+
+In addition to the root partition, you need an ESP. If it does not exist, target a 512 MiB, fat32 partition labeled ESP.
+
+## Install NixOS
+
+```bash
+mount /device/disk/by-label/NIXOS /mnt
+mkdir -p /mnt/boot
+mount /device/disk/by-label/ESP /mnt/boot
+```
+
+Generate initial hardware-configuration.nix and configuration.nix in /mnt/etc/nixos/
+
+```
+nixos-generate-config --root /mnt
+```
+
+You can check that /mnt/etc/nixos/hardware-configuration.nix handles the encryption and the file-system.
+
+Install using configuration.nix and hardware-configuration.nix
+```bash
+nixos-install
+```
+
+## Rebuild NixOS with a downloaded configuration.nix
+
+On newly installed NixOS you can only login with "root".
+
+NB: the X server was not working for me until I updated the kernel (pkgs.linuxPackages_latest). `nomodeset` kernelParam might also help.
+
+Download and install a custom configuration.nix from github
+```bash
+mv /etc/nixos/configuration{,.bak}.nix
+mv /etc/nixos/hardware-configuration{,.bak}.nix
+mkdir -p /root/Dev && cd /root/Dev
+nix-env -i git
+git clone https://github.com/JosephLucas/nixos
+nix-env -e git
+install -o root -g root -m 644 configuration.nix /etc/nixos/
+```
+
+You might want to edit by hand the /etc/nixos/hardware-configuration.nix using info in /root/Dev/nixos/hardware-configuration.nix. Then
+
+```bash
+dir="etc/nixos/overlays" && mkdir -p /"$dir" && chmod -R 644 /"$dir" && install -o root -g root -m 644 "$dir"/* /"$dir"/
+dir="root/nixos/secrets" && mkdir -p /"$dir" && chmod -R 644 /"$dir" && install -o root -g root -m 644 "$dir"/ddclient.conf /"$dir"/
+```
+
+Fill by hand /root/nixos/secrets/ddclient.conf missing fields. Then
+
+```
+install -o root -g root -m 644 root/nixos/lightdm_backgroung.png /root/nixos/
+nix-channel --add https://nixos.org/channels/nixos-unstable nixos
+```
+
+Check current channels with `nix-channel --list`.
+
+Rebuild NixOS 
+
+```
+nixox-rebuild switch --upgrade
+rm -r /root/Dev
+```
+
+## Set a new user
+
+```
+su <user> # change user
+passwd # replace old passwd 1234 (default) with a new passwd
+cd ~ && mkdir ~/Dev
+git clone https://github.com/JosephLucas/nixos
+cd nixos 
+install -o $USER -g users -m 644 home/user/.face $HOME/
+install -o $USER -g users -m 644 home/user/.wallpaper.jpg $HOME/ 
+```
+
+## Manage user dotfiles
+
+Install [home-manager](https://github.com/rycee/home-manager):
+
+```bash 
+su <user> # next cmds should not be executed as root but as <user>
+cd ~ && mkdir -p .config/nixpkgs
+ln -s $HOME/Dev/nixos/home/user/.config/nixpkgs/home.nix $HOME/.config/nixpkgs/home.nix
+nix-channel --add https://github.com/rycee/home-manager/archive/master.tar.gz home-manager
+nix-channel --update
+```
+
+Log out and log in (duno why but seemed necessary). Then do install home-manager and create the first user-generation
+
+```bash
+nix-shell '<home-manager>' -A install
+```
+
+## XFCE
+
+### Themes
+
+In `xfce4-settings-manager` > Appearance:
+
+* "Tango" icon theme
+* "Adwaita dark" style, a gtk2 and gtk3 theme
+
+### Keyboard
+
+Enable writing french with a QWERTY: 
+ 1. go to settings-manager > keyboard > layout
+ 2. in layout option", set a shortcut to switch keyboard.
+ 3. add "English (US, intl. with dead keys)"
+ 
+ (a "dead key" is a key doing nothing when pressed once, e.g. \` is a dead key for this layout)
+ 
+ Then, add an item in the xfce panel to see the current keyboard.
+ 
+ When using this last keyboard:
+ 
+  | typing          | gives result |
+  |:---------------:|:------------:|
+  | \` + a          | à            |
+  | ´ + e           | é            |
+  | Alt + ´         | \'           |
+  | Alt + Shift + ¨ | "            |
+  | Alt + ,         | ç            |
+
+### Configure colors of the xfce-terminal
+
+In xfce4-terminal: Edit > Preferences > Colors and edit the specific color
+
+### Use Windows-NixOS dual boot
+
+Before switching, it is necessary to :
 (i) activate RAID (ii) activate "secure boot"; for booting on Windows 
 (i) activate AHCI (ii) deactivate "secure boot"; for booting on systemd-boot/NIXOS
 
-## Main differences with the [install of arch linux on an ASUS zenbook pro UX32VD](https://github.com/JosephLucas/archlinux_installation): 
-* systemd-boot instead of rEFInd
-* i3 as window manager
-* icon-theme "rodent" default in xfce instead of gnome-humanity
-* [fish](https://nixos.wiki/wiki/Fish) instead of grml
+## Auto-start some applications 
 
-## Common commands
-
-Try some packages in the user space
-```bash
-nix-env -iA package
-```
-
-### Free some space
-```bash
-nix-collect-garbage --delete-older-than 3d
-```
-Get all packages installed in the user space
-```bash
-nix-env -q
-```
-Uninstall a package
-```bash
-nix-env -e package
-```
-
-## Bluetooth (for Bose Quiet Confort 35)
-
-[This](http://www.planet-libre.org/index.php?post_id=21101) helped and [this](https://nixos.wiki/wiki/Bluetooth) also.
-[This](https://askubuntu.com/a/773391) was very useful.
-
-## Solve audio issues
-
-If, when you plug a headset via a jack plug, the hotplug activation yields a loud crackling sound, it might be a larsen.
-I solved a larsen by just lowering lowering (or muting) the headset microphone. Do it via alsamixer if it's not feasible via pavucontrol.
-
-Beware plug'in jack headset with hotplug, your ears may suffer !
-
-If pavucontrol is not showing all output sources, you may want to reset pulseaudio user settings.
-```bash
-rm -rf ~/.config/pulseaudio
-```
-
-## Nix overlays
-
-[A comprehensible example](https://stackoverflow.com/a/50783276) and [some explanations](https://stackoverflow.com/a/53537841).
-
-## TeXstudio dark theme
-
-See https://github.com/texstudio-org/texstudio/issues/45
-```
-wget https://www.dropbox.com/s/imkvx08gsjtzww8/TeXstudio_francesco_dark.rar
-unar Downloads/TeXstudio_francesco_dark.rar
-cd TeXstudio_francesco_dark
-```
-Read the README and install
-```
-sed 's/Interface\\Language=fr/Interface\\Language=fr/g' francesco_dark_win.txsprofile > $HOME/.config/texstudio/dark_theme.txsprofile
-sed "s%C:/Users/franc/AppData/Roaming/TeXstudio/rc/%$HOME/.config/texstudio/%g" stylesheet.qss > $HOME/.config/texstudio/stylesheet.qss
-cp -r rc ~/.config/texstudio/
-```
-Then load `$HOME/.config/texstudio/dark_theme.txsprofile` in texstudio : Option->Load Profiles... 
+xfce settings-manager >  Session and startup > Application autostart, and add 
+* `i3`, the window manager and 
+* `udiskie --tray`, the panel item of [udiskie](https://github.com/coldfix/udiskie) for managing removable media
 
 ## Firefox 
 
@@ -140,7 +232,7 @@ Add a keyword to preferred search engines.
 
 To use a specific search engine:
  1. select the bar
- 2. tap the keyboard plus a space
+ 2. tap the keyb plus a space
  3. continue with request
 
 ### spell-checker
@@ -160,7 +252,7 @@ With tab/enter:
 
 Install the "Dark reader" extension and "Dark" theme within Firefox.
 
-[Solve the white flash when firefox loads a new page](https://www.reddit.com/r/firefox/comments/8g37x2/any_way_to_disable_the_white_flash_when_a_website/) :
+(seems not needed anymore): [solve the white flash when firefox loads a new page](https://www.reddit.com/r/firefox/comments/8g37x2/any_way_to_disable_the_white_flash_when_a_website/) :
 ```bash
 echo '.browserContainer { background-color: #000000 !important; }' >> .mozilla/firefox/ir3ucze0.default/chrome/userChrome.css
 ```
@@ -172,8 +264,49 @@ echo '.browserContainer { background-color: #000000 !important; }' >> .mozilla/f
 
 Install a french dictionary for spellchecking.
 
-TODO :
-* Design a backup workflow for [the file with mail filters](https://askubuntu.com/a/184293).
+Preferences > Display > Colors ... 
+
+Select a gray background, an almost white text and set the _Override colors ..._ multi-choice list to _Always_
+
+## Pidgin
+
+If you cannot see pidgin plugins, delete previous configuration 
+```
+rm -r ~/.purple 
+```
+
+## Bluetooth (for Bose Quiet Confort 35)
+
+[This](http://www.planet-libre.org/index.php?post_id=21101) helped and [this](https://nixos.wiki/wiki/Bluetooth) also.
+[This](https://askubuntu.com/a/773391) was very useful.
+
+## Solve audio issues
+
+Beware plug'in jack headset with hotplug, your ears may suffer !
+
+If, when you plug a headset via a jack plug, the hotplug activation yields a loud crackling sound, it might be a larsen.
+I solved a larsen by just lowering (or muting) the headset microphone. Do it via alsamixer if it's not feasible via pavucontrol.
+
+If pavucontrol is not showing all output sources, you may want to reset pulseaudio user settings.
+```bash
+rm -rf ~/.config/pulseaudio
+```
+
+## TeXstudio dark theme
+
+See https://github.com/texstudio-org/texstudio/issues/45
+```
+wget https://www.dropbox.com/s/imkvx08gsjtzww8/TeXstudio_francesco_dark.rar
+unar Downloads/TeXstudio_francesco_dark.rar
+cd TeXstudio_francesco_dark
+```
+Read the README and install
+```
+sed 's/Interface\\Language=fr/Interface\\Language=fr/g' francesco_dark_win.txsprofile > $HOME/.config/texstudio/dark_theme.txsprofile
+sed "s%C:/Users/franc/AppData/Roaming/TeXstudio/rc/%$HOME/.config/texstudio/%g" stylesheet.qss > $HOME/.config/texstudio/stylesheet.qss
+cp -r rc ~/.config/texstudio/
+```
+Then load `$HOME/.config/texstudio/dark_theme.txsprofile` in texstudio : Option->Load Profiles... 
 
 ## Install and run OnlyOffice through docker
 
@@ -195,12 +328,6 @@ With previous installation [NGINX workers](https://stackoverflow.com/questions/2
 Tried unsuccesfuly to use [docker-compose](https://github.com/ONLYOFFICE/Docker-CommunityServer/issues/42).
 After that a new problem was to configure nginx to "listen localhost" (allow requests from localhost).
 
-## Auto-mount usb removable media with [udiskie](https://github.com/coldfix/udiskie)
-xfce settings-manager >  Session and startup > Application autostart, and add 
-```bash
-udiskie --tray
-```
-
 ## Configure fish shell
 
 Copy this repository `.config/fish` folder, then/or
@@ -211,53 +338,7 @@ fish_config
 NB: the preview of the shell prompt depends on the current folder when you exec `fish_config`.
 If you want to preview the git hints, be sure to be in a git versioned folder.
 
-## home-manager
-
-Follow the [installation procedure](https://github.com/rycee/home-manager)
-
-During a new install
-```bash
-mkdir $HOME/Dev/nixos
-git clone https://github.com/JosephLucas/nixos.git
-mkdir -p .config/nixpkgs
-ln -s $HOME/Dev/nixos/.config/nixpkgs/home.nix .config/nixpkgs/home.nix
-```
-
-## XFCE
-
-### Configure colors of the xfce-terminal
-
-In xfce4-terminal: Edit > Preferences > Colors and edit the specific color
-
-### Themes
-
-In `xfce4-settings-manager` > Appearance:
-
-* "Tango" icon theme
-* "Adwaita dark" style, a gtk2 and gtk3 theme
-
-### Keyboard
-
-To write french with a QWERTY: 
- 1. go to settings-manager > keyboard > layout
- 2. in layout option", set a shortcut to switch keyboard.
- 3. add "English (US, intl. with dead keys)"
- 
- (a "dead key" is a key doing nothing when pressed once, e.g. \` is a dead key for this layout)
- 
- Then, add an item in the xfce panel to see the current keyboard.
- 
- When using this last keyboard:
- 
-  | typing          | gives result |
-  |:---------------:|:------------:|
-  | \` + a          | à            |
-  | ´ + e           | é            |
-  | Alt + ´         | \'           |
-  | Alt + Shift + ¨ | "            |
-  | Alt + ,         | ç            |
-
-## Integrate pycharm to NixOS with i3
+## Integrate pycharm to NixOS with i3Beware plug'in jack headset with hotplug, your ears may suffer !
 
 (in Help | Edit custom properties...)
 [Adding suppress.focus.stealing=false in custom properties fixes](https://intellij-support.jetbrains.com/hc/en-us/community/posts/360001411659-Lose-Focus-after-Switching-Workspace-in-i3wm).
@@ -292,29 +373,78 @@ vim /root/nixos/secrets/ddclient.conf
 Edit the <...> fields of the ddclient.conf file. Then, still as `root`
 ```bash
 chown -R root:root /root/nixos/secrets
-sudo chmod -R 700  /root/nixos/secrets
+sudo chmod -R 600  /root/nixos/secrets
 ```
 
 [Disable ipv6](https://support.opendns.com/hc/en-us/community/posts/220040827/comments/224654527) since 
 "if using IPv6 connectivity (for DNS queries), the additional features of OpenDNS (content filtering, individual domain blocking, logs and stats, etc) do not take effect, because you cannot register your IPv6 address at https://dashboard.opendns.com/settings/ yet"
 
+## Shortcuts
+
+As much as possible standard shortcuts are used
+
+XFCE
+
+ |                 |               |
+ |:---------------:|:--------------|
+ | Alt+3           | app finder    |
+
+i3
+
+|                 |               |
+|:---------------:|:------------|
+| Mod+D          | dmenu                 |
+| Mod+Shift+q    | kill current window   |
+| Mod+Shift+x    | lock screen           |
+| Mod+w          | horizontally tab windows   |
+| Mod+s          | vertically tab windows     |
+
 ## TIPS
-"Unlock" the panel of xfce if you want to move it. This can be done in the preference of the panel.
 
-Clear systemd journals older than X days
+## Common commands
+
+Try some packages in the user space
 ```bash
-journalctl --vacuum-time=10d
+nix-env -iA package
 ```
 
-Clear systemd journals if they exceed X storage
+### Free some space
 ```bash
-journalctl --vacuum-size=2G
+nix-collect-garbage --delete-older-than 3d
+```
+Get all packages installed in the user space
+```bash
+nix-env -q
+```
+Uninstall a package
+```bash
+nix-env -e package
+``` 
+
+### Use small "channels" to get quick fixes/latest versions of nix packages
+
+When a pull request is merged, it is first integrated to _nixos-unstable-small_ channel. Some times later binary builds of the corresponding packages are made available on _nixos-unstable_ channel.
+It might be useful to switch to the _small_ channel to get a quick fix even if a local build will be requested.  
+
+### nixos-rebuild switch and --upgrade
+
+`nixos-rebuild switch --upgrade` is equal to `nix-channel --update nixos; nixos-rebuild switch` : i.e. it first update the channels and then rebuild the system.
+
+If you want to: 
+* add/remove a package but keep all other package as they are : `nixos-rebuild switch`
+* upgrade all packages to latest versions (described in the corresponding branch of nixpkgs) or get a merged pull request on master:
+```
+nix-channel --add https://nixos.org/channels/nixos-unstable-small nixos
+nixos-rebuild switch --upgrade
+```
+After some times you can return to `unstable` to benefit from the binary cache 
+```bash
+nix-channel --add https://nixos.org/channels/nixos-unstable nixos
 ```
 
-To debug dns lookups
-```bash
-nslookup -type=txt debug.opendns.com
-```
+## Nix overlays
+
+[A comprehensible example](https://stackoverflow.com/a/50783276) and [some explanations](https://stackoverflow.com/a/53537841).
 
 ### Beware some packages
 
@@ -346,6 +476,25 @@ that seems to correspond to https://github.com/tmm1/pstree which is not the expe
 
 Install expected pstree through nixos.pismic.
 
+## Other arbitrary tips
+
+"Unlock" the panel of xfce if you want to move it. This can be done in the preference of the panel.
+
+Clear systemd journals older than X days
+```bash
+journalctl --vacuum-time=10d
+```
+
+Clear systemd journals if they exceed X storage
+```bash
+journalctl --vacuum-size=2G
+```
+
+To debug dns lookups
+```bash
+nslookup -type=txt debug.opendns.com
+```
+
 ## TODO
 [solve annoying prompt for nextcloud client](https://github.com/NixOS/nixpkgs/issues/38266)
 
@@ -376,10 +525,21 @@ TIPP10 lear to type efficiently
 
 [article of xfce over mounting removable media](https://docs.xfce.org/xfce/thunar/using-removable-media)
 
-## Backup a NIXOS system
+## Check-list for a backup
 
-Backup: 
-* HOME main folders : Documents, Dev, Images, Music, Videos, Nextcloud, Backups
-* Firefox bookmarks
-* Thunderbird filters ./thunderbird/.../msgFilterRules.dat
-* XFCE config files .config/xfce (? to be confirmed)
+The state of NixOS is backed up through the commited configuration.nix and the state of user configurations (dotfiles/wallpapers) are commited through home-manager home.nix and some commited files (wallpapers) too.
+
+Some files are too heavy to be commited or contain personal data.
+These files/folders that should be backed up by hand, are:
+* in the $HOME: Documents, Dev, Images, Music, Videos, Nextcloud, Backups
+* Firefox bookmarks (export them passing by Ctrl+Shift+O)
+* Thunderbird [mail filters](https://askubuntu.com/a/184293) ./thunderbird/.../msgFilterRules.dat
+* XFCE config files .config/xfce (FIXME: didn'tried yet to restore them)
+
+
+
+## Main differences with the [install of arch linux on an ASUS zenbook pro UX32VD](https://github.com/JosephLucas/archlinux_installation): 
+* systemd-boot instead of rEFInd
+* i3 as window manager
+* icon-theme "rodent" default in xfce instead of gnome-humanity
+* [fish](https://nixos.wiki/wiki/Fish) instead of grml

@@ -166,7 +166,7 @@ font pango: Monospace 10
 
 # Wallpaper
 # https://www.reddit.com/r/unixporn/comments/3fckzx/any_experienced_i3_users_out_there_i_need_some/
-exec --no-startup-id feh --bg-scale "$HOME/Dev/nixos/background.jpg"
+exec --no-startup-id feh --bg-scale "$HOME/.wallpaper.jpg"
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 #bar {
