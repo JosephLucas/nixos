@@ -283,6 +283,16 @@ rm -r ~/.purple
 ## Bluetooth (for Bose Quiet Confort 35)
 [Some](http://www.planet-libre.org/index.php?post_id=21101) [good](https://nixos.wiki/wiki/Bluetooth) [reads](https://askubuntu.com/a/773391).
 
+If after pairing, you cannot connect due to [blueman.bluez.errors.DBusFailedError: Protocol not available...](https://github.com/blueman-project/blueman/issues/547):
+```bash
+killall pulseaudio
+```
+
+If needed
+```bash
+connect_boseQC35
+```
+
 ## Solve audio issues
 
 Beware plug'in jack headset with hotplug, your ears may suffer !
