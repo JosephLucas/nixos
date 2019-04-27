@@ -396,6 +396,34 @@ i3
 | Mod+w          | horizontally tab windows   |
 | Mod+s          | vertically tab windows     |
 
+## Install Battle.net with Wine
+
+Download [battle.net client app](https://www.blizzard.com/fr-fr/apps/battle.net/desktop), then install it within a 32bits wine
+```bash
+env WINEARCH=win32 wine Downloads/Battle.net-Setup.exe
+```
+
+### Fix error BLZBNTBNA0000000C
+
+When installing client app, if you get
+```
+We couldn't verify the digital signature of your Battle.net Agent. 
+Follow the steps in this support article to fix this issue. 
+Error Code: BLZBNTBNA0000000C
+```
+Following [official support page](https://eu.battle.net/support/fr/article/161074):
+1. Close any running linux firefox
+
+2. Install wine firefox
+```
+env WINEARCH=win32 winetricks firefox
+```
+3. Go to https://www.digicert.com/digicert-root-certificates.htm with wine firefox
+
+4. Find, _DigiCert Assured ID Root CA_ and click _Download_
+
+You should now have a certificate. If it is not the case go to the support page for more information.
+
 ## TIPS
 
 ## Common commands
