@@ -129,9 +129,18 @@ passwd # replace old passwd 1234 (default) with a new passwd
 cd ~ && mkdir ~/Dev
 git clone https://github.com/JosephLucas/nixos
 cd nixos 
-install -o $USER -g users -m 644 home/user/.face $HOME/
-install -o $USER -g users -m 644 home/user/.wallpaper.jpg $HOME/ 
+install -o $USER -g users -m 644 home/user/.wallpaper.jpg $HOME/
 ```
+
+Add a user icon using _accountsservice_ package. Following the [arch linux documentation](https://wiki.archlinux.org/index.php/LightDM#Changing_your_avatar), as root:
+
+```
+install -o <user> -g users -m 655 ~<user>/Dev/nixos/home/user/.face /var/lib/AccountsService/icons/<user>.png
+echo -e "[User]\nIcon=/var/lib/AccountsService/icons/<user>.png" > /var/lib/AccountsService/users/<user>
+chmod 644 /var/lib/AccountsService/users/<user>  
+```
+
+Another solution would be to use the [~/.face path](https://www.reddit.com/r/debian/comments/7if6xw/simple_way_to_change_login_iconavatar_for_one/dqyq8np?utm_source=share&utm_medium=web2x). But this requires giving read+exec permissions on ~user to the lightdm user. 
 
 ## Manage user dotfiles
 
@@ -224,7 +233,7 @@ Then load the user config
 ```
 mkdir -p ~/Dev && cd ~/Dev
 git clone -b relaxed https://github.com/pyllyukko/user.js 
-ln -s $HOME/Dev/user.js/user.js $HOME/.mozilla/firefox/mermiu44.jlucas/
+ln -s $HOME/Dev/user.js/user.js $HOME/.mozilla/firefox/mermiu44.<user>/
 ```
 
 ### Configure search tools
@@ -382,19 +391,19 @@ As much as possible standard shortcuts are used
 
 XFCE
 
- |                 |               |
- |:---------------:|:--------------|
- | Alt+3           | app finder    |
+|                 |               |
+|:---------------:|:--------------|
+| Alt+F3           | app finder    |
 
 i3
 
 |                 |               |
 |:---------------:|:------------|
-| Mod+D          | dmenu                 |
-| Mod+Shift+q    | kill current window   |
-| Mod+Shift+x    | lock screen           |
-| Mod+w          | horizontally tab windows   |
-| Mod+s          | vertically tab windows     |
+| Mod+D           | dmenu                 |
+| Mod+Shift+q     | kill current window   |
+| Mod+Shift+x     | lock screen           |
+| Mod+w           | horizontally tab windows   |
+| Mod+s           | vertically tab windows     |
 
 ## Install Battle.net with Wine
 
