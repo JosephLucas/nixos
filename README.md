@@ -538,7 +538,10 @@ These files/folders that should be backed up by hand, are:
 * in the $HOME: Documents, Dev, Images, Music, Videos, Nextcloud, Backups
 * Firefox bookmarks (export them passing by Ctrl+Shift+O)
 * Thunderbird [mail filters](https://askubuntu.com/a/184293) ./thunderbird/.../msgFilterRules.dat
-* XFCE config files .config/xfce (FIXME: didn'tried yet to restore them)
+* XFCE config files .config/xfce (FIXME: didn'tried to restore them yet)
+
+When using thunderbird backups, check that thunderbird is not running when copying msgFilterRules.dat files. 
+Otherwise thunderbird wont load the files and will even erase them when it stops. 
 
 ## Main differences with the [install of arch linux on an ASUS zenbook pro UX32VD](https://github.com/JosephLucas/archlinux_installation): 
 * systemd-boot instead of rEFInd
