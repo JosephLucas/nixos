@@ -30,5 +30,6 @@ in
     };
     ".config/i3/config".source = dotfiles_src_dir + /.config/i3/config;
     ".gitconfig".source = dotfiles_src_dir + /.gitconfig;
+    ".wallpaper".source = dotfiles_src_dir + /.wallpaper;
   };
 }

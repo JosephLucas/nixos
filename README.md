@@ -126,15 +126,19 @@ rm -r /root/Dev
 ```
 su <user> # change user
 passwd # replace old passwd 1234 (default) with a new passwd
+```
+
+Add a user icon using _accountsservice_ package. Following the [arch linux documentation](https://wiki.archlinux.org/index.php/LightDM#Changing_your_avatar):
+
+```
 cd ~ && mkdir ~/Dev
 git clone https://github.com/JosephLucas/nixos
-cd nixos 
-install -o $USER -g users -m 644 home/user/.wallpaper.jpg $HOME/
 ```
 
-Add a user icon using _accountsservice_ package. Following the [arch linux documentation](https://wiki.archlinux.org/index.php/LightDM#Changing_your_avatar), as root:
+Next commands must be executed as sudo since the image is seen by all through lightdm login GUI
 
 ```
+su root
 install -o <user> -g users -m 655 ~<user>/Dev/nixos/home/user/.face /var/lib/AccountsService/icons/<user>.png
 echo -e "[User]\nIcon=/var/lib/AccountsService/icons/<user>.png" > /var/lib/AccountsService/users/<user>
 chmod 644 /var/lib/AccountsService/users/<user>  
