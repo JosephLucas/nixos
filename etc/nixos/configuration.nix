@@ -142,7 +142,9 @@
 
     in [
     docker-compose
-    
+
+    accountsservice # used to display /home/$USER/.face in lightdm
+
     # xfce4 goodies
     xfce.xfce4-panel
     xfce.xfce4-mpc-plugin # mpd panel plugin
