@@ -30,7 +30,5 @@ in
     };
     ".config/i3/config".source = dotfiles_src_dir + /.config/i3/config;
     ".gitconfig".source = dotfiles_src_dir + /.gitconfig;
-    # user face image (used at least in lightdm prompt)
-    ".face".source = dotfiles_src_dir + /.face;
   };
 }
