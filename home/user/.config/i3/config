@@ -37,7 +37,7 @@ bindsym $mod+Return exec xfce4-terminal
 bindsym $mod+Shift+q kill
 
 # Only displays applications shipping a .desktop file.
-bindsym $mod+d exec --no-startup-id rofi -theme Arc-Dark -font "mono bold 15" -lines 10 -columns 1 -lines 10 -disable-history -hide-scrollbar -show-icons -width 50 -show drun
+bindsym $mod+d exec --no-startup-id rofi -theme Arc-Dark -font "mono bold 15" -lines 10 -columns 1 -lines 10 -disable-history -hide-scrollbar -show-icons -width 50 -sort -sorting-method fzf -show drun
 
 # change focus
 bindsym $mod+j focus left
