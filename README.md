@@ -480,6 +480,21 @@ After some times you can return to `unstable` to benefit from the binary cache
 nix-channel --add https://nixos.org/channels/nixos-unstable nixos
 ```
 
+### Wifi
+    
+Get available wifi: 
+```
+iwlist <interface> scan
+```
+Web interface is found using: 
+```
+ip link show
+```
+
+### Search a nix package
+
+`nix search wget` or go to https://nixos.org/nixos/packages.html
+
 ## Nix overlays
 
 [A comprehensible example](https://stackoverflow.com/a/50783276) and [some explanations](https://stackoverflow.com/a/53537841).
@@ -578,4 +593,3 @@ Do TIPP10: learn to type efficiently
 [udev rule for usb hotplug](https://unix.stackexchange.com/a/86425)
 
 [article of xfce over mounting removable media](https://docs.xfce.org/xfce/thunar/using-removable-media)
-
