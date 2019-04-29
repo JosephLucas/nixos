@@ -8,11 +8,6 @@
   imports =
     [ # Include the results of the hardware scan + custom swapfile.
       ./hardware-configuration.nix
-
-      # FIXME : use home-manager if the community decides to integrate it
-      # Module for the management of user dotfiles
-      # https://rycee.gitlab.io/home-manager/index.html
-      # <home-manager/nixos>
     ];
   
   swapDevices = [
@@ -69,12 +64,12 @@
   networking = {
     hostName = "nixos"; # Define your hostname.
 
-    # Due to WIP dashbord in openDNS (that only allows IPv4); active IPv6 would bypasses the content filtering
+    # Due to WIP dashbord in openDNS (that only allows IPv4); activating IPv6 would bypasses the content filtering
     # https://support.opendns.com/hc/en-us/community/posts/220040827/comments/224654527
     enableIPv6 = false;
-    nameservers = ["127.0.0.1"]; # to connect to local dns : dnscript service
+    nameservers = ["127.0.0.1"]; # using a local dns (see dnscript service)
 
-    firewall.enable = true; # it''s true by default anyway. It is a "statefull firewall".
+    firewall.enable = true; # it's true by default anyway. It is a "statefull firewall".
     # Open ports in the firewall. 
     # firewall.allowedTCPPorts = [ ... ];
     # firewall.allowedUDPPorts = [ ... ];
@@ -85,13 +80,10 @@
 
     networkmanager.enable = true;
     # NB: networkmanager supersedes wireless.enable
-    
-    # to get available wifi : "iwlist <interface> scan"
-    # the interface is found using "ip link show"
   };
 
   fonts.fonts = with pkgs; [
-    corefonts # Micrsoft free fonts
+    corefonts # Microsoft free fonts
     inconsolata  # monospaced
     nerdfonts # popular 'iconic fonts' (warning, it is huge: 1.7G)
     iosevka
@@ -108,32 +100,29 @@
   # Set your time zone.
   time.timeZone = "Europe/Paris"; # services.localtime might give the same info any-way, but needs internet
 
-  # e.g. steam package has a non-free licence
   nixpkgs = {
     config = {
-      allowUnfree = true;
+      allowUnfree = true; # steam package has a non-free licence
     };
     overlays = map import [ ./overlays/boseqc35.nix ./overlays/pidgin.nix ];
   };
 
-  # taken from https://github.com/paolobueno/nixos-config/blob/master/configuration.nix
   programs = {
-    fish.enable = true;
+    fish.enable = true; # taken from https://github.com/paolobueno/nixos-config/blob/master/configuration.nix
     adb.enable = true; # android debuger, for smartphone
-    mosh.enable = true; # mobile shell, pour remplacer ssh+screen dans certains cas
+    # mosh.enable = true; # mobile shell, pour replace ssh+screen in some cases
     ssh.startAgent = true;
-    qt5ct.enable = true; # allow to use at5ct to configure Qt5 GUI themes
+    qt5ct.enable = true; # allow to use qt5ct to configure Qt5 GUI themes
   };
   
   environment.variables.EDITOR = "vim";
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-  # Or go to https://nixos.org/nixos/packages.html
+  # List packages installed in system profile
   environment.systemPackages = with pkgs; 
     # https://nixos.wiki/wiki/Python
     let 
       my-python-packages = python-packages: with python-packages; [
+        # custom python packages
         pandas
         requests
         virtualenvwrapper
@@ -141,11 +130,11 @@
       python-with-my-packages = python3.withPackages my-python-packages;
 
     in [
-    docker-compose
+    python-with-my-packages
 
-    accountsservice # used to display /home/$USER/.face in lightdm
+    accountsservice # used to display users images in lightdm
 
-    # xfce4 goodies
+    # xfce4
     xfce.xfce4-panel
     xfce.xfce4-mpc-plugin # mpd panel plugin
     xfce.xfce4-clipman-plugin
@@ -158,36 +147,45 @@
     xfce.xfce4-notifyd # for volume notifications ....
     xfce.xfce4-hardware-monitor-plugin
     networkmanagerapplet
-
     xfce.thunar-archive-plugin # thunar extension for compressed/archives
     # AFAIK udiskie supersedes thunar-volman
     # xfce.thunar-volman # thunar extension for removable disks
+    udiskie # removable disk automounter for udisks + icon in systray
 
+    # i3
+    feh # used to diplay wallpaper
     i3lock-fancy
     rofi
 
+    # themes
+    arc-theme # a gtk2 and gtk3 theme
+    # papirus-icon-theme
+    # gnome-icon-theme
+
+    # services, tools for services
+    docker-compose
     service-wrapper # convenient wrapper for systemctl
+
+    # sound
     pavucontrol # PulseAudio Volume Control
     pulseeffects # equlizer and other tools for pulseaudio
     blueman # bluetooth gtk client
     boseqc35
 
     # basic command line utilities
-    feh # for wallpaper on i3
     file
     gdb
     killall
+    xorg.xkill
     zip
     unar # universal unarchiver (more powerful than 7z)
     lsof
     pciutils # for lspci
     git
     wget
-    arc-theme # a gtk2 and gtk3 theme
     pandoc # universal conversion conversion of written file types
     texlive.combined.scheme-full # this is heavy
     texstudio
-    xorg.xkill
     vim
     w3m # a minimalist cmd line web browser with image previews
     htop
@@ -199,37 +197,29 @@
     rsync
     ncdu
     ntfs3g # enable ntfs (FUSE driver with write support)
-    udiskie # removable disk automounter for udisks
-    gnome3.file-roller 
+    gnome3.file-roller
     mpc_cli # a minimalist cmd line, client interface for mpd the music player daemon, for i3 bindings
     ncmpcpp # a command line, client interface for mpd the music player daemon
 
-    python-with-my-packages
-
-    # GUI apps
+    # GUI serious apps
     firefox 
+    shadowfox # dark theme for preferences-internal-pages of firefox
     overlayed-pidgin-with-plugins # client for all chats (facebook, telegram, whatsapp, irc, ...)
-    shadowfox # dark theme for preferences internal pages of firefox
     thunderbird
     jetbrains.pycharm-community
     nextcloud-client
     evince
     gimp
     inkscape
-    vlc # might be superseded by mpv + ncmcpp
+    vlc # FIXME might be superseded by mpv + ncmcpp
     mpv # A high-end video player
     ranger # minimalist file explorator with vi key bindings and image previews
     zathura # minimalist document viewer
     anki # a small app for exercising memorisation on custom questions
     recoll # powerfull search tool (can even search inside files)
     # catfish # simple search tool (package is broken for now) # FIXME retry later
-
     keepassxc # manager of passwords
     gnucash # manager of bank accounts
-
-    # themes
-    papirus-icon-theme
-    # gnome-icon-theme
 
     # graphic card
     glxinfo
@@ -258,19 +248,9 @@
   sound.enable = true;
 
   services = {
-    compton = {
-      enable          = true;
-      inactiveOpacity = "0.95";
-      #fade            = true;
-      #fadeDelta       = 4;
-      #shadow          = true;
-    };
-
-    samba.enable = true;
-    # hardware management
+    # hardware management services
     fstrim.enable = true; # ssd disk optimisation
-    # udisks2.enable = true; # use dbus to manage storage devices # FIXME usb disk automount
-    # udev.packages = [ pkgs.libmtp.bin ]; # mtp : for android devices
+    # udev.packages = [ pkgs.libmtp.bin ]; # FIXME mtp : for android devices, not tested
     tlp.enable = true; # energy/temperature management 
     thermald.enable = true; # thermal optimisation for intel cpu
     printing.enable = true; # enable CUPS to print documents
@@ -283,7 +263,14 @@
       latitude = "48.856614";
       longitude = "2.3522219";
     }; # Make sure to not start redshift-gtk, otherwise you will have 2 instances of redhift running, that cause a swicth between standard colors and redshifted colors every 1-2 seconds.
-    
+    compton = {
+      enable          = true;
+      inactiveOpacity = "0.95";
+      #fade            = true;
+      #fadeDelta       = 4;
+      #shadow          = true;
+    };
+    samba.enable = true;
     openssh = {
       enable = true;
       permitRootLogin = "no";
@@ -297,35 +284,27 @@
       # "cisco" is the name of the IPv4 OpenDNS DNS sever (CISCO has bought OpenDNS)
       resolverName = "cisco";
     };
-
-    # Enable the X11 windowing system.
     xserver = {
-      enable = true;
+      enable = true; # enable the X11 windowing system
       autorun = true;
       layout = "us";
-      # Enable touchpad support.
-      libinput.enable = true;
-      
-      # here you can switch the used card at boot
-      videoDrivers = [ "nvidia" ];
+      libinput.enable = true; # enable touchpad support
+      videoDrivers = [ "nvidia" ]; # used card at boot: either 'nvidia' or 'intel'
       displayManager.lightdm = {
         enable = true;
-        # FIXME : lightdm background should be downloaded during first install
         # ${...} is used to create a mini derivation. i.e. the file will be stored into /nix/store. (c.f. https://stackoverflow.com/a/43850372)
         # It is necessary to do this since the file in ~<user>/ subdir is not accessible by the lightdm user
         # (c.f. https://askubuntu.com/questions/671373/lightdm-does-not-have-permission-to-read-path-xubuntu-greeter-settings)
         background =  "${/root/nixos/lightdm_backgroung.png}";
         greeters.gtk = {
           theme.name = "Adwaita-dark";
-          # lightdm will show the image ~<user>/.face for each user
+          # FIXME: due to right permissions we prefer using accountsservices: https://wiki.archlinux.org/index.php/LightDM#Changing_your_avatar
           # https://debian-facile.org/viewtopic.php?id=16365
-          extraConfig = ''
-            default-user-image = ~/.face
-          '';
+          # extraConfig = ''
+          #  default-user-image = ~/.face
+          # '';
         };
       };
-      
-      # https://nixos.wiki/wiki/Xfce     + i3wm 
       desktopManager = {
         default = "xfce";
         xterm.enable = false;
@@ -334,15 +313,14 @@
           noDesktop = true;
           enableXfwm = false;
           # https://discourse.nixos.org/t/thunar-doesnt-show-archive-plugin/1499/3
+          # FIXME: does volman works here?
           thunarPlugins = [ pkgs.xfce.thunar-archive-plugin  pkgs.xfce.thunar-volman ]; # thunar archive plugin does not seem to work
         };
       };
       windowManager.i3.enable = true;
     };
 
-    # music player daemon
-    # NB: mpd is a system-wide daemon (https://askubuntu.com/a/555484)
-    mpd = {
+    mpd = { # music player daemon. NB: mpd is a system-wide daemon (https://askubuntu.com/a/555484)
       enable = true;
       # FIXME : this next line seems contradictory with the system-wide functionning
       user = "jlucas";
