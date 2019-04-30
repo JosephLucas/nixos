@@ -6,7 +6,7 @@
 
 Use the `Dell Update` utility to get latest EFI/BIOS firmware and latest OS Recovery Tool versions. 
 
-### Get room for NIXOS
+### Shrink Windows OS partition to get room for NIXOS
 
 1. Free as much disk space as possible by removing/uninstalling unused files and softwares
 2. Unencrypt the disk by disabling _BitLocker_ in order to unlock next defrag/resize actions. Un-encryption can be done through the settings manager. Beware that un-encryption takes several minutes.
@@ -15,13 +15,13 @@ Use the `Dell Update` utility to get latest EFI/BIOS firmware and latest OS Reco
 
 If you plan to use another tool to defrag (e.g. _UltraDefrag_ or _PerfectDisk_), perform a _boot time_ defragmentation to get rid of otherwise unmovable system files. Nevertheless, sometimes, due to stuck metadata in the middle of the NTFS part you might not be able to reduce the size of the windows partition above 50%.
 
-### Create a NixOS live USB installer
+### Create a live USB from Windows
 
 1. Download the latest NixOS iso
 2. Using _Rufus_, create the live USB. Check that it is labeled NIXOS_ISO otherwise you may get a 
   "squashfs error... unable to read id index table."). A MBR partition table worked.
 
-### Create a live USB from a linux distribution 
+### Or create a live USB from another linux distribution 
 
 1. `lsblk` to get the device with the usb stick (e.g. `/dev/sdX`) 
 2. `sudo cfdisk /dev/sdX` and remove all partitions, then enter `Write` and validate by typing `yes` 
