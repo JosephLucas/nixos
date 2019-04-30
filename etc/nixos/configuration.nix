@@ -132,8 +132,6 @@
     in [
     python-with-my-packages
 
-    accountsservice # used to display users images in lightdm
-
     # xfce4
     xfce.xfce4-panel
     xfce.xfce4-mpc-plugin # mpd panel plugin
@@ -349,6 +347,7 @@
       # https://github.com/NixOS/nixpkgs/issues/24288
       configFile = /root/nixos/secrets/ddclient.conf;
     };
+    accounts-daemon.enable = true; # accountsservice daemon used to display users images in lightdm
   };
 
   hardware = {

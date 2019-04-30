@@ -139,9 +139,14 @@ Next commands must be executed as sudo since the image is seen by all through li
 
 ```
 su root
-install -o <user> -g users -m 655 ~<user>/Dev/nixos/home/user/.face /var/lib/AccountsService/icons/<user>.png
-echo -e "[User]\nIcon=/var/lib/AccountsService/icons/<user>.png" > /var/lib/AccountsService/users/<user>
-chmod 644 /var/lib/AccountsService/users/<user>  
+user="<user>"
+configFile="/var/lib/AccountsService/users/$user"
+iconFile="/var/lib/AccountsService/icons/$user.png"
+install -o $user -g users -m 655 /home/$user/Dev/nixos/home/user/.face "$iconFile"
+# Edit the 'Icon' variable if it exists or insert a new 'Icon' variable
+grep -qF '[User]' "$configFile" || echo '[User]' >> "$configFile"
+grep -qF 'Icon' "$configFile" && sed -i "s%Icon=.*$%Icon=$iconFile%g" "$configFile" || echo "Icon=$iconFile" >> "$configFile" 
+chmod 644 "$configFile"  
 ```
 
 Another solution would be to use the [~/.face path](https://www.reddit.com/r/debian/comments/7if6xw/simple_way_to_change_login_iconavatar_for_one/dqyq8np?utm_source=share&utm_medium=web2x). But this requires giving read+exec permissions on ~user to the lightdm user. 
