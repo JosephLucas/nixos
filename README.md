@@ -293,10 +293,9 @@ Select a gray background, an almost white text and set the _Override colors ..._
 
 ## Pidgin
 
-If you cannot see pidgin plugins, delete previous configuration 
-```
-rm -r ~/.purple 
-```
+If you cannot see pidgin plugins:
+1. Close and restart pidgin
+2. If last step did not work: delete previous pidgin configuration `rm -r ~/.purple` and restart pidgin
 
 ## Bluetooth (for Bose Quiet Confort 35)
 [Some](http://www.planet-libre.org/index.php?post_id=21101) [good](https://nixos.wiki/wiki/Bluetooth) [reads](https://askubuntu.com/a/773391).
