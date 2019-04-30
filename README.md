@@ -442,6 +442,20 @@ env WINEARCH=win32 winetricks firefox
 
 You should now have a certificate. If it is not the case go to the support page for more information.
 
+## Steam
+
+Steam seems to remember the video card used during its own installation or first start. 
+If the card used while launching the game differs from the card used to install steam, problems may occur.
+
+To totally reset the configuration of steam: 
+```
+rm -r /home/<user>/.local/share/Steam .steam
+```
+
+Then restart steam with the dedicated Geforce graphic card instead of the integrated Intel graphic card.
+
+Check that steam uses the right card : _Help > System Information > Video Card_.
+
 ## TIPS
 
 ## Common commands

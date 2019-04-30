@@ -225,15 +225,8 @@
 
     # games
     steam
-    # NB: steam seems to remember the video card used during its own installation/first start. If the card used to launch the game differs from the card used to install steam, problems may occur.
-    # To totally reset steam : rm -r /home/jlucas/.local/share/Steam .steam
     (wine.override { wineBuild = "wineWow"; wineRelease = "staging"; })
     (winetricks.override { wine = (wine.override { wineBuild = "wineWow"; wineRelease = "staging"; }) ; })
-    # For SC2 it might be needed to add missing dll 
-    #  winetricks d3dcompiler_43
-    # Using WINEARCH=win32 is preferable for SC2
-    #  winetricks firefox
-    # Reset game settings
     samba
   ];
 
